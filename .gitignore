@@ -18,3 +18,5 @@
 
 #PostgresSQL
 /data/
+/server/src/data-source.ts
+
