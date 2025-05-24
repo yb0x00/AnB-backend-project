@@ -11,6 +11,7 @@ import {User} from "./User";
 import {Agent} from "./Agent";
 import {Signature} from "./Signature";
 import {Payment} from "./Payment";
+import {Lessee} from "./Lessee";
 
 @Entity("contracts")
 export class Contract {
@@ -45,8 +46,8 @@ export class Contract {
     @ManyToOne(() => Property)
     property!: Property;
 
-    @ManyToOne(() => User)
-    lessee!: User;
+    @ManyToOne(() => Lessee, (lessee) => lessee.contracts, {nullable: false})
+    lessee!: Lessee;
 
     @ManyToOne(() => User)
     lessor!: User;

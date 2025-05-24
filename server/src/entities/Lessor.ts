@@ -12,5 +12,5 @@ export class Lessor {
     user!: User;
 
     @OneToMany(() => Property, (property) => property.lessor, {nullable: true})
-    property?: Property;
+    property?: Property[];
 }
