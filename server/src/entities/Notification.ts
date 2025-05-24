@@ -8,14 +8,18 @@ import {
 import {Contract} from "./Contract";
 import {Payment} from "./Payment";
 import {User} from "./User";
+import {NotificationType} from "../enums/NotificationType";
 
 @Entity("notifications")
 export class Notification {
     @PrimaryGeneratedColumn()
     notification_id!: number;
 
-    @Column({length: 50})
-    notification_type!: string; // 예: '결제완료', '계약종료', 등
+    @Column({
+        type: "enum",
+        enum: NotificationType,
+    })
+    notification_type!: NotificationType;
 
     @Column({length: 255})
     notification_message!: string;

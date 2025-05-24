@@ -19,5 +19,5 @@ export class Agent {
     agency?: Agency;
 
     @OneToMany(() => Property, (property) => property.agent, {nullable: true})
-    property?: Property;
+    property?: Property[];
 }
