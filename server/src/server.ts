@@ -4,14 +4,16 @@ import {AppDataSource} from "./data-source";
 import 'reflect-metadata';
 import {seedUsers} from "../seed/seed_users";
 import {seedProperties} from "../seed/seed_properties";
+import authRoutes from "./routes/auth.routes";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
-app.get("/", (_: Request, res: Response) => {
-    res.send("running")
-});
+app.use("/api", authRoutes);
 
 let port = 4000;
 

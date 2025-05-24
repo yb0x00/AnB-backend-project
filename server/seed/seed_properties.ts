@@ -50,6 +50,20 @@ export const seedProperties = async () => {
 
             // 6. Property 시딩
             for (const data of propertyDataList) {
+                // 이미 존재하는지 확인
+                const existing = await queryRunner.manager.findOne(Property, {
+                    where: {
+                        property_address_lot: data.property_address_lot,
+                        property_lease_space: data.property_lease_space,
+                    },
+                });
+
+                if (existing) {
+                    console.log(`[SKIP] 이미 존재함: ${data.property_address_lot}, ${data.property_lease_space}`);
+                    continue; // 다음 데이터로 넘어감
+                }
+
+                // 존재하지 않으면 새로 생성
                 const property = queryRunner.manager.create(Property, {
                     ...data,
                     property_status: PropertyStatus.AVAILABLE,

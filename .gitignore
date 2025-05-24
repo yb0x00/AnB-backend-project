@@ -9,9 +9,10 @@
 
 #Node Modules
 /server/node_modules/
+/node_modules
 
 # Environment Files
-/.env
+/server/.env
 
 # IDE Settings
 .idea/
