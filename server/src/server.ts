@@ -1,4 +1,4 @@
-import express, {Request, Response} from "express";
+import express from "express";
 import morgan from "morgan";
 import {AppDataSource} from "./data-source";
 import 'reflect-metadata';
@@ -6,6 +6,7 @@ import {seedUsers} from "../seed/seed_users";
 import {seedProperties} from "../seed/seed_properties";
 import authRoutes from "./routes/auth.routes";
 import dotenv from "dotenv";
+import notificationRoutes from "./routes/notification.routes";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan("dev"));
 app.use("/api", authRoutes);
+app.use("/api", notificationRoutes);
 
 let port = 4000;
 
