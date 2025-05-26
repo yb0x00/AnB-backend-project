@@ -26,10 +26,10 @@ dataSources.local.xml
 /data/
 
 # 시드 및 민감 파일
-src/data-source.ts
-src/seed/users_seed.json
-src/seed/properties_seed.json
-src/seed/constants.ts
+#src/data-source.ts
+#src/seed/users_seed.json
+#src/seed/properties_seed.json
+#src/seed/constants.ts
 
 # 컴파일된 미들웨어 파일
 src/middleware/auth.middleware.js

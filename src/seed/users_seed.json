@@ -1,0 +1,27 @@
+[
+  {
+    "login_id": "agent",
+    "user_name": "이은수",
+    "email": "agent01@example.com",
+    "password": "1234",
+    "wallet_address": "0x7f3c73e29b85dd4a5bd5b689f671c47f3ab17e46",
+    "role": "lessor",
+    "agent_license_number": "1234-5678-9101"
+  },
+  {
+    "login_id": "lessor",
+    "user_name": "최영빈",
+    "email": "lessor01@example.com",
+    "password": "1234",
+    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "role": "lessor"
+  },
+  {
+    "login_id": "lessee",
+    "user_name": "최은별",
+    "email": "lessee01@example.com",
+    "password": "1234",
+    "wallet_address": "0x8e6a9ee0cb8e041d1f0369b356584caf756c7093",
+    "role": "lessee"
+  }
+]
