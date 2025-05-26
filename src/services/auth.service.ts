@@ -1,7 +1,7 @@
-import {AppDataSource} from "@/data-source";
 import {User} from "@/entities/User";
 import jwt from "jsonwebtoken";
 import {findUserRole} from "./role.service";
+import {AppDataSource} from "@/data-source";
 
 export const loginService = async (
     login_id: string,
