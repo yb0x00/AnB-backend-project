@@ -14,7 +14,7 @@ export async function getUserNotifications(
         order: {created_at: "DESC"},
     });
 
-    return notifications.map((n) => ({
+    return notifications.map((n: Notification) => ({
         notification_id: n.notification_id,
         notification_type: n.notification_type,
         notification_message: n.notification_message,
