@@ -1,10 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
-import {AppDataSource} from "../src/data-source";
-import {User} from "../src/entities/User";
-import {Agent} from "../src/entities/Agent";
-import {Lessor} from "../src/entities/Lessor";
-import {Lessee} from "../src/entities/Lessee";
+import {AppDataSource} from "../data-source";
+import {User} from "../entities/User";
+import {Agent} from "../entities/Agent";
+import {Lessor} from "../entities/Lessor";
+import {Lessee} from "../entities/Lessee";
 import {SeedUser} from "./types";
 
 export const seedUsers = async () => {

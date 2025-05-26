@@ -20,6 +20,9 @@
 #PostgresSQL
 /data/
 /server/src/data-source.ts
-/server/seed/users_seed.json
-/server/seed/properties_seed.json
-/server/seed/constants.ts
+/server/src/seed/users_seed.json
+/server/src/seed/properties_seed.json
+/server/src/seed/constants.ts
+
+dist
+server/src/middleware/auth.middleware.js
