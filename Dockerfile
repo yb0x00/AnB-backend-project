@@ -4,10 +4,10 @@ FROM node:18
 # 2. 앱 루트 디렉토리로 이동
 WORKDIR /app
 
-# 3. 전체 복사 (Dockerfile 기준)
+# 3. 프로젝트 전체 복사
 COPY . .
 
-# 4. server 디렉토리로 이동
+# 4. server 디렉토리로 이동 (npm install 기준)
 WORKDIR /app/server
 
 # 5. 의존성 설치
