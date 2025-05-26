@@ -10,14 +10,11 @@ COPY tsconfig.json ./
 # 소스 코드 복사
 COPY src ./src
 
-# seed 파일 포함 (dist로 복사해두기 위해)
-COPY src/seed ./src/seed
-
 # 의존성 설치 및 빌드
 RUN npm ci
 RUN npm run build
 
-# seed 파일을 빌드 결과에 복사 (dist 안에 위치시키기)
+# seed 디렉토리 빌드 결과에 복사
 RUN mkdir -p dist/seed && cp -r src/seed/* dist/seed/
 
 # ---- Production Stage ----

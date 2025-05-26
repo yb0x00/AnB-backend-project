@@ -1,28 +1,35 @@
-# 디폴트 무시된 파일
-/shelf/
-/workspace.xml
-# 에디터 기반 HTTP 클라이언트 요청
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-
-#Node Modules
-/server/node_modules/
+# Node.js
 /node_modules
+/dist
+/build
+/temp
+/tmp
 
-# Environment Files
-/server/.env
+# TypeScript output
+*.js
+*.js.map
 
-# IDE Settings
+# Environment files
+.env
+.env.local
+
+# IDE & Editor settings
 .idea/
+.vscode/
+shelf/
+workspace.xml
+httpRequests/
+dataSources/
+dataSources.local.xml
 
-#PostgresSQL
+# PostgreSQL
 /data/
-/server/src/data-source.ts
-/server/src/seed/users_seed.json
-/server/src/seed/properties_seed.json
-/server/src/seed/constants.ts
 
-dist
-server/src/middleware/auth.middleware.js
+# 시드 및 민감 파일
+src/data-source.ts
+src/seed/users_seed.json
+src/seed/properties_seed.json
+src/seed/constants.ts
+
+# 컴파일된 미들웨어 파일
+src/middleware/auth.middleware.js
