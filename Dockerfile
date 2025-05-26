@@ -3,7 +3,7 @@
 FROM node:18 AS builder
 
 # 캐시 무효화를 위한 임시 라인. 빌드가 성공하면 제거합니다.
-ARG CACHE_BUSTER=1
+ARG CACHE_BUSTER=2
 # ARG CACHE_BUSTER=2 # 만약 다시 캐시 무효화가 필요하면 숫자를 변경합니다.
 
 WORKDIR /app
