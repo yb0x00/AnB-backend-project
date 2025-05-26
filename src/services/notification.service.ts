@@ -1,6 +1,6 @@
-import {NotificationResponseDto} from "../dtos/notification.dto";
-import {AppDataSource} from "../data-source";
-import {Notification} from "../entities/Notification";
+import {NotificationResponseDto} from "@/dtos/notification.dto";
+import {AppDataSource} from "@/data-source";
+import {Notification} from "@/entities/Notification";
 
 export async function getUserNotifications(
     userId: number

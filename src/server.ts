@@ -1,6 +1,5 @@
 import express from "express";
 import morgan from "morgan";
-import {AppDataSource} from "./data-source";
 import 'reflect-metadata';
 import {seedUsers} from "./seed/seed_users";
 import {seedProperties} from "./seed/seed_properties";
@@ -8,6 +7,7 @@ import authRoutes from "./routes/auth.routes";
 import dotenv from "dotenv";
 import notificationRoutes from "./routes/notification.routes";
 import {User} from "./entities/User";
+import {AppDataSource} from "@/data-source";
 
 dotenv.config();
 

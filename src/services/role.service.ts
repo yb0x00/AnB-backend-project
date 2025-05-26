@@ -1,7 +1,7 @@
-import {AppDataSource} from "../data-source";
-import {Agent} from "../entities/Agent";
-import {Lessor} from "../entities/Lessor";
-import {Lessee} from "../entities/Lessee";
+import {AppDataSource} from "@/data-source";
+import {Agent} from "@/entities/Agent";
+import {Lessor} from "@/entities/Lessor";
+import {Lessee} from "@/entities/Lessee";
 
 export const findUserRole = async (
     userId: number
