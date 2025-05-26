@@ -7,6 +7,7 @@ import {seedProperties} from "../seed/seed_properties";
 import authRoutes from "./routes/auth.routes";
 import dotenv from "dotenv";
 import notificationRoutes from "./routes/notification.routes";
+import {User} from "./entities/User";
 
 dotenv.config();
 
@@ -24,8 +25,23 @@ const startServer = async () => {
         await AppDataSource.initialize();
         console.log("Database initialized");
 
-        await seedUsers();
-        await seedProperties();
+        // 배포 환경에서만 실행, 단 최초 1회만
+        if (process.env.NODE_ENV === "production") {
+            const userRepo = AppDataSource.getRepository(User);
+            const userCount = await userRepo.count();
+
+            if (userCount === 0) {
+                console.log("Running seed in production (first-time only)");
+                await seedUsers();
+                await seedProperties();
+            } else {
+                console.log("Seed already applied in production. Skipping.");
+            }
+        } else {
+            console.log("Running seed in development");
+            await seedUsers();
+            await seedProperties();
+        }
 
         app.listen(port, () => {
             console.log(`Server running at http://localhost:${port}`);
