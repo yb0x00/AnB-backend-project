@@ -18,7 +18,7 @@ app.use(morgan("dev"));
 app.use("/api", authRoutes);
 app.use("/api", notificationRoutes);
 
-let port = 4000;
+let port = process.env.PORT || 4000;
 
 const startServer = async () => {
     try {
