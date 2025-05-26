@@ -18,7 +18,7 @@ app.use(morgan("dev"));
 app.use("/api", authRoutes);
 app.use("/api", notificationRoutes);
 
-let port = process.env.PORT || 4000;
+let port = Number(process.env.PORT) || 4000;
 
 const startServer = async () => {
     try {
@@ -43,7 +43,7 @@ const startServer = async () => {
             await seedProperties();
         }
 
-        app.listen(port, () => {
+        app.listen(port, "0.0.0.0", () => {
             console.log(`Server running at http://localhost:${port}`);
         });
     } catch (error) {
