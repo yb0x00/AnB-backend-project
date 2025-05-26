@@ -5,7 +5,7 @@ import {PropertyStatus} from "@/enums/PropertyStatus";
 import {Agent} from "@/entities/Agent";
 import {Lessor} from "@/entities/Lessor";
 import {AppDataSource} from "@/data-source";
-import {SEED_AGENT_USER_NAME, SEED_LESSOR_USER_NAME} from "@/seed/constants";
+import {SEED_AGENT_USER_NAME, SEED_LESSOR_USER_NAME} from "./constants";
 
 export const seedProperties = async () => {
     const filePath = path.resolve(__dirname, "properties_seed.json");
