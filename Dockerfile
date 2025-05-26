@@ -16,6 +16,14 @@ RUN npm ci
 COPY tsconfig.json ./
 COPY src ./src
 
+# --- 디버깅 시작 ---
+# COPY src ./src 명령 후 /app/src/seed/ 디렉토리의 내용을 확인합니다.
+# 이 로그에서 users_seed.json이 보이는지 확인하여 파일이 빌드 컨텍스트에 제대로 포함되었는지 파악합니다.
+RUN echo "--- Debugging: Contents of /app/src/seed/ after COPY src ./src ---"
+RUN ls -l /app/src/seed/
+RUN echo "------------------------------------------------------------------"
+# --- 디버깅 끝 ---
+
 # TypeScript 코드를 JavaScript로 빌드합니다.
 # 이 과정에서 src/ 폴더의 내용이 dist/ 폴더로 컴파일되며,
 # tsconfig.json에 설정된 모든 경로 별칭 (paths)이 tsc-alias에 의해 해결됩니다.
@@ -24,9 +32,18 @@ RUN npm run build
 # Seed 관련 JSON 파일만 빌드된 dist/seed/ 폴더로 복사합니다.
 # TypeScript 파일들은 이미 빌드 단계에서 .js 파일로 컴파일되어 dist/ 에 있습니다.
 # JSON 파일은 컴파일되지 않으므로 별도로 복사해야 합니다.
+# 와일드카드 사용 시 발생했던 '#' 에러를 해결하기 위해 개별 파일로 명시합니다.
 RUN mkdir -p dist/seed/ # dist/seed 폴더가 없을 경우를 대비하여 생성
 COPY src/seed/properties_seed.json ./dist/seed/properties_seed.json
 COPY src/seed/users_seed.json ./dist/seed/users_seed.json
+
+# --- 디버깅 시작 ---
+# JSON 파일 복사 후 /app/dist/seed/ 디렉토리의 내용을 확인합니다.
+# 이 로그에서 JSON 파일들이 dist/seed/ 에 제대로 복사되었는지 확인합니다.
+RUN echo "--- Debugging: Contents of /app/dist/seed/ after JSON COPY ---"
+RUN ls -l /app/dist/seed/
+RUN echo "------------------------------------------------------------"
+# --- 디버깅 끝 ---
 
 # ---- Production Stage ----
 # Node.js 18-alpine 버전을 사용하여 가볍고 운영에 적합한 최종 이미지를 구성합니다.
