@@ -11,10 +11,10 @@ export const seedProperties = async () => {
     const filePath = path.resolve(__dirname, "properties_seed.json");
 
     try {
-        // 1. 데이터베이스 초기화 (필요 시)
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize();
-        }
+        // // 1. 데이터베이스 초기화 (필요 시)
+        // if (!AppDataSource.isInitialized) {
+        //     await AppDataSource.initialize();
+        // }
 
         // 2. JSON 파일 읽기 및 파싱
         const raw = await fs.readFile(filePath, "utf-8");
