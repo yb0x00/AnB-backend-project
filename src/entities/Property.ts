@@ -6,7 +6,7 @@ import {
 } from "typeorm";
 import {Lessor} from "./Lessor";
 import {Agent} from "./Agent";
-import {PropertyStatus} from "../enums/PropertyStatus";
+import {PropertyStatus} from "@/enums/PropertyStatus";
 
 @Entity("properties")
 @Unique(["property_address_lot", "property_lease_space"])

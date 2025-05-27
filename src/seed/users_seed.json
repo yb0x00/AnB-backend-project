@@ -5,7 +5,8 @@
     "email": "agent01@example.com",
     "password": "1234",
     "wallet_address": "0x7f3c73e29b85dd4a5bd5b689f671c47f3ab17e46",
-    "role": "lessor",
+    "role": "agent",
+    "phone": "010-1111-1111",
     "agent_license_number": "1234-5678-9101"
   },
   {
@@ -14,7 +15,8 @@
     "email": "lessor01@example.com",
     "password": "1234",
     "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
-    "role": "lessor"
+    "role": "lessor",
+    "phone": "010-2222-2222"
   },
   {
     "login_id": "lessee",
@@ -22,6 +24,7 @@
     "email": "lessee01@example.com",
     "password": "1234",
     "wallet_address": "0x8e6a9ee0cb8e041d1f0369b356584caf756c7093",
-    "role": "lessee"
+    "role": "lessee",
+    "phone": "010-3333-3333"
   }
 ]

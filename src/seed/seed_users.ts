@@ -38,6 +38,7 @@ export const seedUsers = async () => {
                     agent_license_number,
                     agency: undefined,
                     property: undefined,
+                    phone: user.phone
                 });
                 await queryRunner.manager.save(Agent, agent);
             } else if (role === "lessor") {
