@@ -1,14 +1,11 @@
 import * as fs from "fs/promises";
 import * as path from "path";
-import {AppDataSource} from "../src/data-source";
-import {Property} from "../src/entities/Property";
-import {PropertyStatus} from "../src/enums/PropertyStatus";
-import {Agent} from "../src/entities/Agent";
-import {Lessor} from "../src/entities/Lessor";
-import {
-    SEED_AGENT_USER_NAME,
-    SEED_LESSOR_USER_NAME,
-} from "./constants";
+import {Property} from "@/entities/Property";
+import {PropertyStatus} from "@/enums/PropertyStatus";
+import {Agent} from "@/entities/Agent";
+import {Lessor} from "@/entities/Lessor";
+import {AppDataSource} from "@/data-source";
+import {SEED_AGENT_USER_NAME, SEED_LESSOR_USER_NAME} from "./constants";
 
 export const seedProperties = async () => {
     const filePath = path.resolve(__dirname, "properties_seed.json");
