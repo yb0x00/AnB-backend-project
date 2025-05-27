@@ -13,10 +13,7 @@ RUN npm ci
 COPY tsconfig.json ./
 COPY src ./src
 
-# 디버깅 라인은 그대로 유지합니다.
-RUN echo "--- Debugging: Contents of /app/src/seed/ after COPY src ./src ---"
-RUN ls -l /app/src/seed/
-RUN echo "------------------------------------------------------------------"
+# 디버깅 라인은 제거합니다.
 
 RUN npm run build
 
