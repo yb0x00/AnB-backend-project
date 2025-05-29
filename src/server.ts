@@ -8,6 +8,7 @@ import dotenv from "dotenv";
 import notificationRoutes from "./routes/notification.routes";
 import {User} from "./entities/User";
 import {AppDataSource} from "@/data-source";
+import requestContractRoutes from "./routes/contract.request.routes";
 
 dotenv.config();
 
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 app.use("/api", authRoutes);
 app.use("/api", notificationRoutes);
+app.use("/api/contracts", requestContractRoutes);
 
 let port = Number(process.env.PORT) || 4000;
 
