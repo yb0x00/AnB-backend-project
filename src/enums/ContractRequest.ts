@@ -1,0 +1,7 @@
+export enum ContractRequestStatus {
+    PENDING = "PENDING",
+    LESSOR_ACCEPTED = "LESSOR_ACCEPTED",
+    AGENT_ACCEPTED = "AGENT_ACCEPTED",
+    ALL_ACCEPTED = "ALL_ACCEPTED",
+    REJECTED = "REJECTED",
+}
