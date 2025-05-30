@@ -45,12 +45,14 @@ export const seedUsers = async () => {
                 const lessor = queryRunner.manager.create(Lessor, {
                     user,
                     property: undefined,
+                    phone: user.phone
                 });
                 await queryRunner.manager.save(Lessor, lessor);
             } else if (role === "lessee") {
                 const lessee = queryRunner.manager.create(Lessee, {
                     user,
                     contract: undefined,
+                    phone: user.phone
                 });
                 await queryRunner.manager.save(Lessee, lessee);
             }

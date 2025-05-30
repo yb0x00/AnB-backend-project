@@ -29,6 +29,9 @@ export const seedProperties = async () => {
         await queryRunner.connect();
         await queryRunner.startTransaction();
 
+        // 퀀스 리셋 (property_number 시작값 100001로 설정)
+        await queryRunner.query(`ALTER SEQUENCE "properties_property_number_seq" RESTART WITH 100001`);
+
         try {
             // 4. Agent 조회
             const agent = await queryRunner.manager

@@ -30,13 +30,13 @@ export class Contract {
     @Column({length: 50, nullable: true})
     contract_termination_reason?: string;
 
-    @Column({length: 255})
+    @Column({length: 255, nullable: true})
     contract_hash!: string;
 
-    @Column({length: 42})
+    @Column({length: 42, nullable: true})
     contract_address!: string;
 
-    @Column({length: 255})
+    @Column({length: 255, nullable: true})
     contract_blockchain_tx_hash!: string;
 
     @Column({length: 20})

@@ -1,3 +1,15 @@
+process.on("unhandledRejection", (reason, promise) => {
+    console.error("Unhandled Rejection at:", promise, "reason:", reason);
+    // 서버 환경에서는 일반적으로 처리되지 않은 거부는 프로세스를 종료하는 것이 좋습니다.
+    process.exit(1);
+});
+
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception:", err);
+    // 처리되지 않은 예외 발생 시 프로세스를 종료합니다.
+    process.exit(1);
+});
+
 import express from "express";
 import morgan from "morgan";
 import 'reflect-metadata';
@@ -8,6 +20,8 @@ import dotenv from "dotenv";
 import notificationRoutes from "./routes/notification.routes";
 import {User} from "./entities/User";
 import {AppDataSource} from "@/data-source";
+import requestContractRoutes from "./routes/contractRequest/create.routes";
+import acceptContractRequest from "./routes/contractRequest/accept.routes";
 
 dotenv.config();
 
@@ -15,8 +29,16 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan("dev"));
+
+// app.get("/test", (req, res) => {
+//     console.log("Test route hit");
+//     res.send("OK");
+// });
+
 app.use("/api", authRoutes);
 app.use("/api", notificationRoutes);
+app.use("/api", requestContractRoutes);
+app.use("/api", acceptContractRequest);
 
 let port = Number(process.env.PORT) || 4000;
 

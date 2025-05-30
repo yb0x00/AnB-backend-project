@@ -10,7 +10,7 @@ export const loginService = async (
 ): Promise<{
     access_token: string;
     user: {
-        id: number;
+        userId: number;
         user_name: string;
         role: "agent" | "lessor" | "lessee" | null;
         property_id: number;
@@ -47,7 +47,7 @@ export const loginService = async (
     return {
         access_token: token,
         user: {
-            id: user.id,
+            userId: user.id,
             user_name: user.user_name,
             role,
             property_id: property.property_id,

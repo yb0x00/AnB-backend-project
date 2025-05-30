@@ -13,6 +13,10 @@
       "jest",
       "node"
     ],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
     "rootDir": "./src",
     "outDir": "./dist",
     "baseUrl": "./src",
@@ -21,6 +25,7 @@
         "*"
       ]
     },
+    "resolveJsonModule": true,
     "moduleResolution": "node"
   },
   "include": [
