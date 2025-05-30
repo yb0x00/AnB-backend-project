@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import {RequestHandler} from "express";
 import jwt from "jsonwebtoken";
 
 export const authenticate: RequestHandler = (req, res, next) => {
@@ -9,7 +9,7 @@ export const authenticate: RequestHandler = (req, res, next) => {
 
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
         console.warn("[auth] 헤더 없음 또는 형식 오류");
-        res.status(401).json({ message: "Authorization header missing" });
+        res.status(401).json({message: "Authorization header missing"});
         return;
     }
 
@@ -22,12 +22,12 @@ export const authenticate: RequestHandler = (req, res, next) => {
         };
         console.log("[auth] 디코딩된 사용자 정보:", decoded);
 
-        (req as any).authUser = { id: decoded.userId };
-        console.log("[auth] req.authUser 설정:", (req as any).authUser);
+        (req as any).user = {id: decoded.userId};
+        console.log("[auth] req.authUser 설정:", (req as any).user);
 
         next();
     } catch (err) {
         console.error("[auth] JWT 검증 실패:", err);
-        res.status(401).json({ message: "Invalid or expired token" });
+        res.status(401).json({message: "Invalid or expired token"});
     }
 };
