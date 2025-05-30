@@ -8,6 +8,8 @@ import {
 import {Property} from "./Property";
 import {Lessee} from "./Lessee";
 import {ContractRequestStatus} from "@/enums/ContractRequest";
+import {User} from "@/entities/User";
+import {Agent} from "@/entities/Agent";
 
 @Entity("contract_requests")
 export class ContractRequest {
@@ -19,6 +21,13 @@ export class ContractRequest {
 
     @ManyToOne(() => Lessee, {nullable: false})
     lessee!: Lessee;
+
+    @ManyToOne(() => User, {nullable: false})
+    lessor!: User;
+
+    @ManyToOne(() => Agent, {nullable: false})
+    agent!: Agent;
+
 
     @Column({
         type: "enum",

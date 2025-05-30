@@ -1,13 +1,14 @@
 import {ethers} from "ethers";
-import LeaseContractABI from "../../abi/LeaseContract.json";
-import {getWallet} from "./blockchain.config";     // 경로 확인 필요
+import * as dotenv from "dotenv";
+import LeaseContractAbi from "@/abi/LeaseContract.json";
+import {wallet} from "@/services/blockchain/blockchain.config";
 
-const contractAddress = process.env.LEASE_CONTRACT_ADDRESS!;
-const leaseContract = new ethers.Contract(contractAddress, LeaseContractABI, getWallet());
+dotenv.config();
 
-export const getLeaseCounter = async (): Promise<number> => {
-    const count = await leaseContract.leaseCounter();
-    return Number(count);
-};
+const leaseContract = new ethers.Contract(
+    process.env.LEASE_CONTRACT_ADDRESS!,          // .env에서 주소
+    LeaseContractAbi as any,                      // 타입 에러 방지를 위한 캐스팅
+    wallet
+);
 
-// 필요한 함수 추가로 export 가능
+export default leaseContract;
