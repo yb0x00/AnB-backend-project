@@ -19,8 +19,12 @@ export const loginService = async (
     const userRepo = AppDataSource.getRepository(User);
     const user = await userRepo.findOne({where: {login_id}});
 
-    if (!user || user.password !== password) {
-        throw new Error("Invalid login_id or password");
+    if (!user) {
+        throw new Error("User not found");
+    }
+
+    if (user.password !== password) {
+        throw new Error("Incorrect password");
     }
 
     const role = await findUserRole(user.id);
@@ -35,14 +39,53 @@ export const loginService = async (
     );
 
     const propertyRepo = AppDataSource.getRepository(Property);
-    const properties = await propertyRepo.find();
+    let property: Property | null = null;
 
-    if (properties.length !== 1) {
-        throw new Error("Property must contain exactly one item for MVP use.");
+    if (role === "lessor") {
+        property = await propertyRepo
+            .createQueryBuilder("property")
+            .leftJoin("property.lessor", "lessor")
+            .leftJoin("lessor.user", "user")
+            .where("user.id = :userId", {userId: user.id})
+            .getOne();
+    } else if (role === "agent") {
+        property = await propertyRepo
+            .createQueryBuilder("property")
+            .leftJoin("property.agent", "agent")
+            .leftJoin("agent.user", "user")
+            .where("user.id = :userId", {userId: user.id})
+            .getOne();
+    } else if (role === "lessee") {
+        let agentEmail: string | null = null;
+
+        switch (user.email) {
+            case "lessee01@example.com":
+                agentEmail = "agent01@example.com";
+                break;
+            case "lessee02@example.com":
+                agentEmail = "agent02@example.com";
+                break;
+            case "lessee03@example.com":
+                agentEmail = "agent03@example.com";
+                break;
+            case "lessee04@example.com":
+                agentEmail = "agent04@example.com";
+                break;
+            default:
+                throw new Error("No agent mapping defined for this lessee");
+        }
+
+        property = await propertyRepo
+            .createQueryBuilder("property")
+            .leftJoin("property.agent", "agent")
+            .leftJoin("agent.user", "agentUser")
+            .where("agentUser.email = :email", {email: agentEmail})
+            .getOne();
     }
 
-    const property = properties[0];
-
+    if (!property) {
+        throw new Error("No property found for the user.");
+    }
 
     return {
         access_token: token,
