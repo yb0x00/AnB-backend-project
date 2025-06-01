@@ -6,72 +6,63 @@ import {NotificationType} from "@/enums/NotificationType";
 import {toNotificationResponseDto} from "@/utils/mapper/notification.mapper";
 import {ContractRequest} from "@/entities/ContractRequest";
 import {Lessee} from "@/entities/Lessee";
+import {Lessor} from "@/entities/Lessor";
+import {Agent} from "@/entities/Agent";
 import {ContractRequestStatus} from "@/enums/ContractRequest";
 
 export const requestContractService = async (userId: number, propertyId: number) => {
     const userRepo = AppDataSource.getRepository(User);
     const lesseeRepo = AppDataSource.getRepository(Lessee);
+    const lessorRepo = AppDataSource.getRepository(Lessor);
+    const agentRepo = AppDataSource.getRepository(Agent);
     const propertyRepo = AppDataSource.getRepository(Property);
     const contractRequestRepo = AppDataSource.getRepository(ContractRequest);
     const notificationRepo = AppDataSource.getRepository(Notification);
 
-    // 유저 정보 조회
+    // 로그인 유저 확인
     const user = await userRepo.findOneByOrFail({id: userId});
 
-    // lessee 정보 조회
-    const lessee = await lesseeRepo.findOne({
+    // Lessee 확인
+    const lessee = await lesseeRepo.findOneOrFail({
         where: {user: {id: userId}},
         relations: ["user"],
     });
 
-    if (!lessee) {
-        throw new Error("해당 사용자는 임차인(Lessee)으로 등록되어 있지 않습니다.");
-    }
-
-    // 매물 정보 조회
-    const property = await propertyRepo.findOne({
+    // 매물 조회
+    const property = await propertyRepo.findOneOrFail({
         where: {property_id: propertyId},
         relations: ["lessor", "lessor.user", "agent", "agent.user"],
     });
 
-    if (!property || !property.lessor?.user || !property.agent?.user) {
-        throw new Error("매물 정보가 충분하지 않습니다.");
-    }
-
-    // ContractRequest 객체 생성 및 저장
+    // ContractRequest 생성
     const newRequest = contractRequestRepo.create({
-        property: property,
-        lessee: lessee,
-        lessor: property.lessor.user,
+        property,
+        lessee,
+        lessor: property.lessor,
         agent: property.agent,
         status: ContractRequestStatus.PENDING,
         lessorAccepted: false,
         agentAccepted: false,
     });
-
     const savedRequest = await contractRequestRepo.save(newRequest);
 
-    // 알림 메시지 작성
+    // 알림 메시지
     const messageLessor = `매물 번호 ${property.property_number}번에 대한 계약 요청이 들어왔습니다.`;
     const messageAgent = `매물 번호 ${property.property_number}번에 대해 ${user.user_name}님이 계약을 요청했습니다.`;
 
-    // 알림 객체 생성
+    // 알림 생성
     const notifications = notificationRepo.create([
         {
-            user: property.lessor.user,
+            user: {id: property.lessor.user.id},
             notification_type: NotificationType.CONTRACT_REQUEST,
             notification_message: messageLessor,
             is_read: false,
-            contract: undefined,
-            payment: undefined,
         },
         {
-            user: property.agent.user,
+            user: {id: property.agent.user.id},
             notification_type: NotificationType.CONTRACT_REQUEST,
             notification_message: messageAgent,
             is_read: false,
-            contract: undefined,
-            payment: undefined,
         },
     ]);
 

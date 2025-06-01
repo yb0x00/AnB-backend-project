@@ -1,20 +1,18 @@
 import {
     Entity,
     Column,
-    ManyToOne, Generated, Unique, PrimaryColumn,
+    ManyToOne,
+    Generated,
+    Unique,
+    PrimaryColumn, JoinColumn,
 } from "typeorm";
-import {Lessor} from "./Lessor";
-import {Agent} from "./Agent";
 import {PropertyStatus} from "@/enums/PropertyStatus";
+import {Agent} from "@/entities/Agent";
+import {Lessor} from "@/entities/Lessor";
 
 @Entity("properties")
 @Unique(["property_address_lot", "property_lease_space"])
 export class Property {
-    // 자동으로 ID 증가시키며 부여
-    // @PrimaryGeneratedColumn()
-    // property_id!: number;
-
-    // 임의 지정
     @PrimaryColumn()
     property_id!: number;
 
@@ -53,10 +51,11 @@ export class Property {
     @Column("bigint")
     property_monthly_rent_price!: number;
 
-    // 관계 설정
-    @ManyToOne(() => Lessor, (lessor) => lessor.property, {nullable: true})
-    lessor!: Lessor;
-
-    @ManyToOne(() => Agent, (agent) => agent.property, {nullable: true})
+    @ManyToOne(() => Agent, {nullable: false})
+    @JoinColumn()
     agent!: Agent;
+
+    @ManyToOne(() => Lessor, {nullable: false})
+    @JoinColumn()
+    lessor!: Lessor;
 }
