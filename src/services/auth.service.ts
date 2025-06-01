@@ -1,8 +1,8 @@
-import { User } from "@/entities/User";
+import {User} from "@/entities/User";
 import jwt from "jsonwebtoken";
-import { findUserRole } from "./role.service";
-import { AppDataSource } from "@/data-source";
-import { Property } from "@/entities/Property";
+import {findUserRole} from "./role.service";
+import {AppDataSource} from "@/data-source";
+import {Property} from "@/entities/Property";
 
 export const loginService = async (
     login_id: string,
@@ -17,7 +17,7 @@ export const loginService = async (
     };
 }> => {
     const userRepo = AppDataSource.getRepository(User);
-    const user = await userRepo.findOne({ where: { login_id } });
+    const user = await userRepo.findOne({where: {login_id}});
 
     if (!user) {
         throw new Error("User not found");
@@ -28,14 +28,15 @@ export const loginService = async (
     }
 
     const role = await findUserRole(user.id);
+    console.log("로그인 시 유저 role:", role);
 
     const secret = process.env.JWT_SECRET as string;
     const expiresIn = "30d";
 
     const token = jwt.sign(
-        { userId: user.id, wallet_address: user.wallet_address, role },
+        {userId: user.id, wallet_address: user.wallet_address, role},
         secret,
-        { expiresIn }
+        {expiresIn}
     );
 
     const propertyRepo = AppDataSource.getRepository(Property);
@@ -46,14 +47,14 @@ export const loginService = async (
             .createQueryBuilder("property")
             .leftJoin("property.lessor", "lessor")
             .leftJoin("lessor.user", "user")
-            .where("user.id = :userId", { userId: user.id })
+            .where("user.id = :userId", {userId: user.id})
             .getOne();
     } else if (role === "agent") {
         property = await propertyRepo
             .createQueryBuilder("property")
             .leftJoin("property.agent", "agent")
             .leftJoin("agent.user", "user")
-            .where("user.id = :userId", { userId: user.id })
+            .where("user.id = :userId", {userId: user.id})
             .getOne();
     } else if (role === "lessee") {
         let agentEmail: string | null = null;
@@ -79,7 +80,7 @@ export const loginService = async (
             .createQueryBuilder("property")
             .leftJoin("property.agent", "agent")
             .leftJoin("agent.user", "agentUser")
-            .where("agentUser.email = :email", { email: agentEmail })
+            .where("agentUser.email = :email", {email: agentEmail})
             .getOne();
     }
 
@@ -87,6 +88,7 @@ export const loginService = async (
         throw new Error("No property found for the user.");
     }
 
+    console.log("최종 반환 직전 role:", role);
     return {
         access_token: token,
         user: {

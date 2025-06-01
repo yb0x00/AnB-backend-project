@@ -33,6 +33,9 @@ export class Contract {
     @Column({length: 255, nullable: true})
     contract_hash!: string;
 
+    @Column({type: "int", nullable: true})
+    contract_blockchain_id?: number;
+
     @Column({length: 42, nullable: true})
     contract_address!: string;
 
