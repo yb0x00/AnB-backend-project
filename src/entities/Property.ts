@@ -1,8 +1,7 @@
 import {
     Entity,
     Column,
-    PrimaryGeneratedColumn,
-    ManyToOne, Generated, Unique,
+    ManyToOne, Generated, Unique, PrimaryColumn,
 } from "typeorm";
 import {Lessor} from "./Lessor";
 import {Agent} from "./Agent";
@@ -11,7 +10,12 @@ import {PropertyStatus} from "@/enums/PropertyStatus";
 @Entity("properties")
 @Unique(["property_address_lot", "property_lease_space"])
 export class Property {
-    @PrimaryGeneratedColumn()
+    // 자동으로 ID 증가시키며 부여
+    // @PrimaryGeneratedColumn()
+    // property_id!: number;
+
+    // 임의 지정
+    @PrimaryColumn()
     property_id!: number;
 
     @Column()

@@ -1,12 +1,54 @@
 [
   {
+    "property_id": 1,
     "property_headline": "화이트톤의 깔끔한 풀옵션 월룸",
-    "property_address_lot": "서울시 강남구 논현동 123-45",
+    "property_address_lot": "서울시 강남구 논현동 1223-45",
     "property_building_usage": "다가구",
     "property_lease_space": "4층",
     "contract_lease_area": 49.24,
     "property_lease_type": "월세",
     "property_deposit_price": 200,
-    "property_monthly_rent_price": 150
+    "property_monthly_rent_price": 150,
+    "agent_email": "agent01@example.com",
+    "lessor_email": "lessor01@example.com"
+  },
+  {
+    "property_id": 2,
+    "property_headline": "화이트톤의 깔끔한 풀옵션 월룸",
+    "property_address_lot": "서울시 강남구 논현동 678-91",
+    "property_building_usage": "다가구",
+    "property_lease_space": "3층",
+    "contract_lease_area": 49.24,
+    "property_lease_type": "월세",
+    "property_deposit_price": 200,
+    "property_monthly_rent_price": 150,
+    "agent_email": "agent02@example.com",
+    "lessor_email": "lessor02@example.com"
+  },
+  {
+    "property_id": 3,
+    "property_headline": "화이트톤의 깔끔한 풀옵션 월룸",
+    "property_address_lot": "서울시 강남구 논현동 1112-13",
+    "property_building_usage": "다가구",
+    "property_lease_space": "2층",
+    "contract_lease_area": 49.24,
+    "property_lease_type": "월세",
+    "property_deposit_price": 200,
+    "property_monthly_rent_price": 150,
+    "agent_email": "agent03@example.com",
+    "lessor_email": "lessor03@example.com"
+  },
+  {
+    "property_id": 4,
+    "property_headline": "화이트톤의 깔끔한 풀옵션 월룸",
+    "property_address_lot": "서울시 강남구 논현동 141-56",
+    "property_building_usage": "다가구",
+    "property_lease_space": "1층",
+    "contract_lease_area": 49.24,
+    "property_lease_type": "월세",
+    "property_deposit_price": 200,
+    "property_monthly_rent_price": 150,
+    "agent_email": "agent04@example.com",
+    "lessor_email": "lessor04@example.com"
   }
 ]

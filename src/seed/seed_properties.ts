@@ -5,18 +5,12 @@ import {PropertyStatus} from "@/enums/PropertyStatus";
 import {Agent} from "@/entities/Agent";
 import {Lessor} from "@/entities/Lessor";
 import {AppDataSource} from "@/data-source";
-import {SEED_AGENT_USER_NAME, SEED_LESSOR_USER_NAME} from "./constants";
 
 export const seedProperties = async () => {
     const filePath = path.resolve(__dirname, "properties_seed.json");
 
     try {
-        // // 1. 데이터베이스 초기화 (필요 시)
-        // if (!AppDataSource.isInitialized) {
-        //     await AppDataSource.initialize();
-        // }
-
-        // 2. JSON 파일 읽기 및 파싱
+        // 1. JSON 파일 읽기 및 파싱
         const raw = await fs.readFile(filePath, "utf-8");
         const propertyDataList = JSON.parse(raw);
 
@@ -24,33 +18,34 @@ export const seedProperties = async () => {
             throw new Error("Seed 파일의 데이터 형식이 배열이 아닙니다.");
         }
 
-        // 3. 트랜잭션 시작
+        // 2. 트랜잭션 시작
         const queryRunner = AppDataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
 
-        // 퀀스 리셋 (property_number 시작값 100001로 설정)
-        await queryRunner.query(`ALTER SEQUENCE "properties_property_number_seq" RESTART WITH 100001`);
-
         try {
-            // 4. Agent 조회
-            const agent = await queryRunner.manager
-                .createQueryBuilder(Agent, "agent")
-                .leftJoinAndSelect("agent.user", "user")
-                .where("user.user_name = :name", {name: SEED_AGENT_USER_NAME})
-                .getOne();
+            // 3. 시퀀스 초기화
+            await queryRunner.query(`ALTER SEQUENCE "properties_property_number_seq" RESTART WITH 100001`);
 
-            // 5. Lessor 조회
-            const lessor = await queryRunner.manager
-                .createQueryBuilder(Lessor, "lessor")
-                .leftJoinAndSelect("lessor.user", "user")
-                .where("user.user_name = :name", {name: SEED_LESSOR_USER_NAME})
-                .getOne();
-
-
-            // 6. Property 시딩
+            // 4. 매물 시딩 루프
             for (const data of propertyDataList) {
-                // 이미 존재하는지 확인
+                const agent = await queryRunner.manager
+                    .createQueryBuilder(Agent, "agent")
+                    .leftJoinAndSelect("agent.user", "user")
+                    .where("user.email = :email", {email: data.agent_email})
+                    .getOne();
+
+                const lessor = await queryRunner.manager
+                    .createQueryBuilder(Lessor, "lessor")
+                    .leftJoinAndSelect("lessor.user", "user")
+                    .where("user.email = :email", {email: data.lessor_email})
+                    .getOne();
+
+                if (!agent || !lessor) {
+                    console.warn(`[SKIP] agent 또는 lessor를 찾을 수 없음. ${data.agent_email}, ${data.lessor_email}`);
+                    continue;
+                }
+
                 const existing = await queryRunner.manager.findOne(Property, {
                     where: {
                         property_address_lot: data.property_address_lot,
@@ -60,10 +55,9 @@ export const seedProperties = async () => {
 
                 if (existing) {
                     console.log(`[SKIP] 이미 존재함: ${data.property_address_lot}, ${data.property_lease_space}`);
-                    continue; // 다음 데이터로 넘어감
+                    continue;
                 }
 
-                // 존재하지 않으면 새로 생성
                 const property = queryRunner.manager.create(Property, {
                     ...data,
                     property_status: PropertyStatus.AVAILABLE,
@@ -80,6 +74,7 @@ export const seedProperties = async () => {
         } catch (err) {
             console.error("Property 시딩 중 오류 발생, 롤백합니다.", err);
             await queryRunner.rollbackTransaction();
+            throw err;
         } finally {
             await queryRunner.release();
         }
@@ -90,5 +85,13 @@ export const seedProperties = async () => {
 
 // 직접 실행될 경우
 if (require.main === module) {
-    seedProperties().then(() => process.exit(0));
+    seedProperties()
+        .then(() => {
+            console.log("seedProperties 실행 완료");
+            process.exit(0);
+        })
+        .catch((err) => {
+            console.error("seedProperties 실행 실패:", err);
+            process.exit(1);
+        });
 }

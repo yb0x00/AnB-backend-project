@@ -20,6 +20,7 @@ export const seedUsers = async () => {
         for (const userData of seedData) {
             const {role, agent_license_number, ...userInfo} = userData;
 
+            // 이메일로 유저 구분
             const existing = await queryRunner.manager.findOne(User, {
                 where: {email: userInfo.email},
             });
