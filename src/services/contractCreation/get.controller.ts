@@ -1,46 +1,35 @@
 import {AppDataSource} from "@/data-source";
-import {Agent} from "@/entities/Agent";
 import {Contract} from "@/entities/Contract";
 
-export const getContractIdForAgent = async (
-    userId: number | undefined,
-    propertyId: number
-): Promise<{ contract_id: number; status: string } | null> => {
-    if (!userId) return null;
-
-    const agentRepo = AppDataSource.getRepository(Agent);
+export const getContractByPropertyService = async (propertyId: number, userId: number) => {
     const contractRepo = AppDataSource.getRepository(Contract);
 
-    // 1. 에이전트 조회
-    const agent = await agentRepo.findOne({
-        where: {
-            user: {
-                id: userId,
-            },
-        },
-        relations: ["user"],
-    });
-
-    if (!agent) return null;
-
-    // 2. 계약 조회 (property.property_id, agent.id 기준)
     const contract = await contractRepo.findOne({
-        where: {
-            property: {
-                property_id: propertyId,
-            },
-            agent: {
-                id: agent.id,
-            },
-        },
-        relations: ["property", "agent"],
+        where: {property: {property_id: propertyId}},
+        relations: [
+            "property",
+            "lessor",
+            "agent", "agent.user",
+            "lessee", "lessee.user",
+        ],
     });
 
-    if (!contract) return null;
+    if (!contract) {
+        throw {status: 403, message: "해당 조건을 만족하는 계약이 존재하지 않습니다."};
+    }
 
-    // 3. 반환
+    const isAuthorized =
+        contract.lessor.id === userId ||
+        contract.agent.user.id === userId ||
+        contract.lessee.user.id === userId;
+
+    if (!isAuthorized) {
+        throw {status: 403, message: "해당 property에 대한 권한이 없습니다."};
+    }
+
     return {
-        contract_id: contract.contract_id,
+        contractId: contract.contract_id,
         status: contract.contract_status,
+        contractBlockchainId: contract.contract_blockchain_id,
     };
 };
