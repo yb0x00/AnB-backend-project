@@ -24,6 +24,7 @@ import requestContractRoutes from "./routes/contractRequest/create.routes";
 import acceptContractRequest from "./routes/contractRequest/accept.routes";
 import getContractRequest from "./routes/contractCreation/get.routes";
 import writeDetailRoutes from "@/routes/contractCreation/writeDetail.routes";
+import getDetailRoutes from "@/routes/contractCreation/getDetail.routes";
 
 dotenv.config();
 
@@ -43,6 +44,7 @@ app.use("/api", requestContractRoutes);
 app.use("/api", acceptContractRequest);
 app.use("/api", getContractRequest);
 app.use("/api", writeDetailRoutes);
+app.use("/api", getDetailRoutes)
 
 let port = Number(process.env.PORT) || 4000;
 
