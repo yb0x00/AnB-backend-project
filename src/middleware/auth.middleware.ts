@@ -1,5 +1,7 @@
 import {RequestHandler} from "express";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const authenticate: RequestHandler = (req, res, next) => {
     console.log("[auth] 미들웨어 진입");
@@ -14,11 +16,13 @@ export const authenticate: RequestHandler = (req, res, next) => {
     const token = authHeader.split(" ")[1];
     try {
         const decoded: any = jwt.verify(token, process.env.JWT_SECRET as string);
+        console.log("[DEBUG] decoded:", decoded);
 
-        (req as any).user = {
+        req.user = {
             id: decoded.userId,
             role: decoded.role,
         };
+        console.log("[DEBUG] req.user in middleware:", (req as any).user);
 
         next();
     } catch (err) {

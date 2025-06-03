@@ -1,12 +1,22 @@
-import {Request, Response} from "express";
+import {Request, Response} from "express"; //
 import {getActiveContractsService} from "@/services/contractCreation/getActive.service";
 
-export const getActiveContractsController = async (req: Request, res: Response) => {
+export const getActiveContractsController = async (req: Request, res: Response): Promise<void> => {
     try {
-        const result = await getActiveContractsService();
-        res.status(200).json(result);
+        const userId = req.user?.id;
+        const role = req.user?.role;
+
+        console.log("[DEBUG] req.user.role", req.user?.role);
+
+        if (!userId || !role) {
+            res.status(401).json({message: "Unauthorized"});
+            return;
+        }
+
+        const contracts = await getActiveContractsService(userId, role);
+        res.status(200).json(contracts);
     } catch (err) {
-        console.error("계약 목록 조회 오류:", err);
-        res.status(500).json({message: "계약 목록 조회 중 오류 발생"});
+        console.error("Error fetching contracts:", err);
+        res.status(500).json({message: "Internal Server Error"});
     }
 };

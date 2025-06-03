@@ -186,24 +186,25 @@ export const acceptContractRequestService = async (
 
         const agentName = agentUser.user_name;
         const lessorName = lessorUser.user_name;
+        const propertyNumber = contractRequest.property.property_number;
 
         await notificationRepo.save([
             notificationRepo.create({
                 user: lesseeUser,
                 notification_type: NotificationType.CONTRACT_CREATION_REQUEST,
-                notification_message: `요청이 승인되었습니다. ${agentName} 중개사가 현재 계약서를 작성 중입니다.`,
+                notification_message: `${propertyNumber}번 계약 요청이 승인되었습니다. ${agentName} 중개사가 현재 계약서를 작성 중입니다.`,
                 contract: savedContract,
             }),
             notificationRepo.create({
                 user: lessorUser,
                 notification_type: NotificationType.CONTRACT_CREATION_REQUEST,
-                notification_message: `${agentName} 중개사가 현재 계약서를 작성 중입니다.`,
+                notification_message: `${agentName} 중개사가 현재 ${propertyNumber}번 계약서를 작성 중입니다.`,
                 contract: savedContract,
             }),
             notificationRepo.create({
                 user: agentUser,
                 notification_type: NotificationType.CONTRACT_CREATION_REQUEST,
-                notification_message: `${lessorName} 임대인이 요청을 수락하였습니다. 계약서를 작성해주세요.`,
+                notification_message: `${lessorName} 임대인이 ${propertyNumber}번 계약 요청을 수락하였습니다. 계약서를 작성해주세요.`,
                 contract: savedContract,
             }),
         ]);
