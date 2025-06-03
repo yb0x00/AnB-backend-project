@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getContractByPropertyService } from "@/services/contractCreation/get.controller";
+import { getContractByPropertyService } from "@/services/contractCreation/get.service";
 
 export const getContractByPropertyController = async (
     req: Request,

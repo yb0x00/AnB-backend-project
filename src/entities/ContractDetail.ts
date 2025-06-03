@@ -10,10 +10,10 @@ import {Contract} from "./Contract";
 @Entity("contracts_details")
 export class ContractDetail {
     @PrimaryGeneratedColumn()
-    contract_id!: number;
+    id!: number; // 고유 ID
 
     @OneToOne(() => Contract)
-    @JoinColumn({name: "contract_id"}) // FK 연결
+    @JoinColumn({name: "contract_id"}) // FK 명시
     contract!: Contract;
 
     @Column({length: 255})
@@ -64,14 +64,17 @@ export class ContractDetail {
     @Column("bigint")
     contract_monthly_rent!: number;
 
-    @Column({type: "date"})
-    contract_rent_payment_date!: Date;
+    @Column({type: "int"})
+    contract_rent_payment_day!: number;
 
     @Column({type: "date"})
     contract_lease_start_date!: Date;
 
     @Column({type: "date"})
     contract_lease_end_date!: Date;
+
+    @Column({type: "int"})
+    contract_duration_months!: number;
 
     @Column({type: "text", nullable: true})
     special_terms?: string;
