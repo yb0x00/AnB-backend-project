@@ -1,11 +1,11 @@
 import {Request, Response} from "express";
-import {User} from "@/entities/User";
 import {Lessee} from "@/entities/Lessee"; // Lessee 엔티티 import
 import {AppDataSource} from "@/data-source"; // 데이터베이스 연결
 import {requestContractService} from "@/services/contractRequest/create.service";
+import {UserPayload} from "@/types/express";
 
 interface AuthenticatedRequest extends Request {
-    user?: User;
+    user?: UserPayload; // UserPayload 타입을 사용하여 인증된 사용자 정보 포함
 }
 
 export const requestController = async (

@@ -5,29 +5,28 @@ import {
     ManyToOne,
     CreateDateColumn,
 } from "typeorm";
-import {Property} from "./Property";
-import {Lessee} from "./Lessee";
-import {ContractRequestStatus} from "@/enums/ContractRequest";
-import {User} from "@/entities/User";
-import {Agent} from "@/entities/Agent";
+import { Property } from "./Property";
+import { Lessee } from "./Lessee";
+import { Lessor } from "./Lessor";
+import { Agent } from "./Agent";
+import { ContractRequestStatus } from "@/enums/ContractRequest";
 
 @Entity("contract_requests")
 export class ContractRequest {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @ManyToOne(() => Property, {nullable: false})
+    @ManyToOne(() => Property, { nullable: false })
     property!: Property;
 
-    @ManyToOne(() => Lessee, {nullable: false})
+    @ManyToOne(() => Lessee, { nullable: false })
     lessee!: Lessee;
 
-    @ManyToOne(() => User, {nullable: false})
-    lessor!: User;
+    @ManyToOne(() => Lessor, { nullable: false })
+    lessor!: Lessor;
 
-    @ManyToOne(() => Agent, {nullable: false})
+    @ManyToOne(() => Agent, { nullable: false })
     agent!: Agent;
-
 
     @Column({
         type: "enum",
@@ -36,13 +35,12 @@ export class ContractRequest {
     })
     status!: ContractRequestStatus;
 
-    @Column({default: false})
+    @Column({ default: false })
     lessorAccepted!: boolean;
 
-    @Column({default: false})
+    @Column({ default: false })
     agentAccepted!: boolean;
 
     @CreateDateColumn()
     createdAt!: Date;
 }
-

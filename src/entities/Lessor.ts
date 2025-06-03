@@ -1,16 +1,12 @@
-import {Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
-import {User} from "./User";
-import {Property} from "./Property";
+import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./User";
 
 @Entity("lessors")
 export class Lessor {
     @PrimaryGeneratedColumn()
-    id!: number; // 고유 ID를 위해 별도 PK 설정
+    id!: number;
 
-    @ManyToOne(() => User, (user) => user.lessor_roles)
+    @ManyToOne(() => User, { nullable: false })
     @JoinColumn()
     user!: User;
-
-    @OneToMany(() => Property, (property) => property.lessor, {nullable: true})
-    property?: Property[];
 }

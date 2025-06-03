@@ -1,13 +1,14 @@
-import {Entity, ManyToOne, OneToMany, PrimaryColumn, PrimaryGeneratedColumn} from "typeorm";
-import {User} from "./User";
-import {Contract} from "./Contract";
+import { Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./User";
+import { Contract } from "./Contract";
 
 @Entity("lessees")
 export class Lessee {
     @PrimaryGeneratedColumn()
-    id!: number; // 고유 ID를 위해 별도 PK 설정
+    id!: number;
 
-    @ManyToOne(() => User, {nullable: false})
+    @ManyToOne(() => User, { nullable: false })
+    @JoinColumn()
     user!: User;
 
     @OneToMany(() => Contract, (contract) => contract.lessee)
