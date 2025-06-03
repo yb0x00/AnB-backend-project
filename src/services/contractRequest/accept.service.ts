@@ -1,12 +1,13 @@
-import { AppDataSource } from "@/data-source";
-import { ContractRequest } from "@/entities/ContractRequest";
-import { ContractRequestStatus } from "@/enums/ContractRequest";
-import { NotFoundError } from "@/errors/NotFoundError";
-import { UnauthorizedError } from "@/errors/UnauthorizedError";
-import { Notification } from "@/entities/Notification";
-import { NotificationType } from "@/enums/NotificationType";
+import {AppDataSource} from "@/data-source";
+import {ContractRequest} from "@/entities/ContractRequest";
+import {ContractRequestStatus} from "@/enums/ContractRequest";
+import {NotFoundError} from "@/errors/NotFoundError";
+import {UnauthorizedError} from "@/errors/UnauthorizedError";
+import {Notification} from "@/entities/Notification";
+import {NotificationType} from "@/enums/NotificationType";
 import leaseContract from "@/services/blockchain/leaseContract.service";
-import { Contract } from "@/entities/Contract";
+import {Contract} from "@/entities/Contract";
+import {User} from "@/entities/User";
 
 export const acceptContractRequestService = async (
     propertyId: number,
@@ -16,12 +17,15 @@ export const acceptContractRequestService = async (
     const contractRequestRepo = AppDataSource.getRepository(ContractRequest);
     const notificationRepo = AppDataSource.getRepository(Notification);
     const contractRepo = AppDataSource.getRepository(Contract);
+    const userRepo = AppDataSource.getRepository(User);
+
+    console.log(`[시작] 계약 요청 승인 - propertyId: ${propertyId}, userId: ${userId}, role: ${role}`);
 
     const contractRequest = await contractRequestRepo.findOne({
         where: {
-            property: { property_id: propertyId },
-            ...(role === "lessor" ? { lessor: { user: { id: userId } } } : {}),
-            ...(role === "agent" ? { agent: { user: { id: userId } } } : {}),
+            property: {property_id: propertyId},
+            ...(role === "lessor" ? {lessor: {user: {id: userId}}} : {}),
+            ...(role === "agent" ? {agent: {user: {id: userId}}} : {}),
         },
         relations: [
             "property",
@@ -35,6 +39,7 @@ export const acceptContractRequestService = async (
     });
 
     if (!contractRequest) {
+        console.error(`[오류] 계약 요청을 찾을 수 없습니다.`);
         throw new NotFoundError("해당 계약 요청이 존재하지 않습니다.");
     }
 
@@ -42,44 +47,67 @@ export const acceptContractRequestService = async (
         (role === "lessor" && contractRequest.lessor.user.id !== userId) ||
         (role === "agent" && contractRequest.agent.user.id !== userId)
     ) {
+        console.error(`[오류] 승인 권한 없음`);
         throw new UnauthorizedError("해당 사용자에게 승인 권한이 없습니다.");
     }
 
     // 승인 처리
     if (role === "lessor") {
         contractRequest.lessorAccepted = true;
-    } else if (role === "agent") {
+    } else {
         contractRequest.agentAccepted = true;
     }
 
+    console.log(`[정보] 승인 처리 완료. lessorAccepted: ${contractRequest.lessorAccepted}, agentAccepted: ${contractRequest.agentAccepted}`);
+
     await notificationRepo.delete({
-        user: { id: userId },
+        user: {id: userId},
         notification_type: NotificationType.CONTRACT_REQUEST,
     });
 
     let blockchainContractId: number | null = null;
     let blockchainMessage = "";
 
-    // 양측 모두 승인했을 때
     if (contractRequest.lessorAccepted && contractRequest.agentAccepted) {
         contractRequest.status = ContractRequestStatus.APPROVED;
+        console.log(`[정보] 양측 승인 완료 → 블록체인 계약 여부 확인 중...`);
 
         const existingContractId = await leaseContract.getContractId(propertyId);
-        console.log("getContractId 반환값 =", existingContractId);
-
         const existingIdNum = Number(existingContractId);
-        console.log("Number 변환된 contractId =", existingIdNum);
+        console.log(`[정보] 현재 블록체인 contractId: ${existingContractId}`);
 
-        if (existingIdNum === 0) {
-            const txResult = await leaseContract.createContract(propertyId);
-            blockchainContractId = Number(txResult.contractId);
+        if (existingContractId === 0n) {
+            console.log(`[정보] 기존 블록체인 계약 없음 → 새로 생성 시도`);
+
+            const lesseeWallet = (await userRepo.findOneByOrFail({id: contractRequest.lessee.user.id})).wallet_address;
+            const lessorWallet = (await userRepo.findOneByOrFail({id: contractRequest.lessor.user.id})).wallet_address;
+            const agentWallet = (await userRepo.findOneByOrFail({id: contractRequest.agent.user.id})).wallet_address;
+
+            console.log(`[지갑] lessee: ${lesseeWallet}, lessor: ${lessorWallet}, agent: ${agentWallet}`);
+
+            if (!lesseeWallet || !lessorWallet || !agentWallet) {
+                throw new Error("지갑 주소가 누락된 사용자가 있어 블록체인 계약을 생성할 수 없습니다.");
+            }
+
+            await leaseContract.createContract({
+                propertyId,
+                lesseeId: lesseeWallet,
+                lessorId: lessorWallet,
+                agentId: agentWallet,
+            });
+
+            console.log(`[블록체인] 계약 생성 요청 완료`);
+
+            const contractIdFromChain = await leaseContract.getContractId(propertyId);
+            blockchainContractId = Number(contractIdFromChain);
             blockchainMessage = "블록체인에 새 계약이 생성되었습니다.";
+            console.log(`[블록체인] 새 contractId 조회: ${contractIdFromChain}`);
         } else {
             blockchainContractId = existingIdNum;
             blockchainMessage = "이미 블록체인에 계약이 존재합니다.";
+            console.log(`[블록체인] 기존 계약 존재 - ID: ${existingIdNum}`);
         }
 
-        // DB에 새로운 계약 저장
         const newContract = contractRepo.create({
             contract_status: "PENDING",
             contract_blockchain_id: blockchainContractId,
@@ -91,6 +119,7 @@ export const acceptContractRequestService = async (
         });
 
         const savedContract = await contractRepo.save(newContract);
+        console.log(`[DB] 새로운 계약 저장 완료 - contractId: ${savedContract.contract_id}`);
 
         const lesseeUser = contractRequest.lessee.user;
         const lessorUser = contractRequest.lessor.user;
@@ -119,14 +148,18 @@ export const acceptContractRequestService = async (
                 contract: savedContract,
             }),
         ]);
+
+        console.log(`[알림] 계약 생성 알림 저장 완료`);
     }
 
     await contractRequestRepo.save(contractRequest);
+    console.log(`[완료] contractRequest 상태 저장 완료`);
 
     return {
         message: "계약 요청이 성공적으로 승인되었습니다.",
         blockchainNotice: blockchainMessage,
-        blockchainContractId: blockchainContractId,
+        blockchainContractId,
         status: contractRequest.status,
     };
 };
+

@@ -22,8 +22,15 @@ export const createContractDetailService = async (
 
     const contract = await contractRepo.findOne({
         where: {contract_id: contractId},
-        relations: ["agent", "agent.user", "lessee", "lessor"]
+        relations: [
+            "agent",
+            "agent.user",
+            "lessee",
+            "lessee.user",
+            "lessor"
+        ]
     });
+
 
     console.log("Fetched contract:", contract);
 
