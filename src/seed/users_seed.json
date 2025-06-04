@@ -14,7 +14,7 @@
     "user_name": "일영빈",
     "email": "lessor01@example.com",
     "password": "1234",
-    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "wallet_address": "0x1a6b99d73a6003b46c367df1d9cd4d993f9c2519",
     "role": "lessor",
     "phone": "010-2222-2221"
   },
@@ -42,7 +42,7 @@
     "user_name": "이영빈",
     "email": "lessor02@example.com",
     "password": "1234",
-    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "wallet_address": "0x1a6b99d73a6003b46c367df1d9cd4d993f9c2519",
     "role": "lessor",
     "phone": "010-2222-2222"
   },
@@ -70,7 +70,7 @@
     "user_name": "삼영빈",
     "email": "lessor03@example.com",
     "password": "1234",
-    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "wallet_address": "0x1a6b99d73a6003b46c367df1d9cd4d993f9c2519",
     "role": "lessor",
     "phone": "010-2222-2223"
   },
@@ -98,7 +98,7 @@
     "user_name": "사영빈",
     "email": "lessor04@example.com",
     "password": "1234",
-    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "wallet_address": "0x1a6b99d73a6003b46c367df1d9cd4d993f9c2519",
     "role": "lessor",
     "phone": "010-2222-2224"
   },

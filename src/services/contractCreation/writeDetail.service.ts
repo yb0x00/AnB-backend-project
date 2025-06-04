@@ -27,7 +27,8 @@ export const createContractDetailService = async (
             "agent.user",
             "lessee",
             "lessee.user",
-            "lessor"
+            "lessor",
+            "property"
         ]
     });
 
@@ -77,7 +78,9 @@ export const createContractDetailService = async (
         });
 
         // 6. 알림 전송
-        const message = "계약서 작성이 완료되었습니다. 확인 후 서명해 주세요";
+        // 6. 알림 전송
+        const propertyNumber = contract.property.property_number;
+        const message = `***${propertyNumber}번 매물에 대한 계약서 작성이 완료되었습니다. 확인 후 서명해 주세요.`;
         const targets = [contract.lessor.id, contract.lessee.user.id];
 
         for (const userId of targets) {
