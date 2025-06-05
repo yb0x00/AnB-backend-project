@@ -5,8 +5,10 @@ import {Lessor} from "@/entities/Lessor";
 import {Lessee} from "@/entities/Lessee";
 import {Agent} from "@/entities/Agent";
 import {User} from "@/entities/User";
+import {Notification} from "@/entities/Notification";
 import {verifyMessage} from "ethers";
 import {handlePostSignatureProcess} from "@/services/contractCreation/posetSignature.service";
+import {NotificationType} from "@/enums/NotificationType";
 
 
 interface CreateSignatureParams {
@@ -30,6 +32,8 @@ export const createSignatureService = async ({
         const lesseeRepo = manager.getRepository(Lessee);
         const lessorRepo = manager.getRepository(Lessor);
         const agentRepo = manager.getRepository(Agent);
+        const notificationRepo = manager.getRepository(Notification);
+
 
         const contract = await contractRepo.findOne({
             where: {contract_id: contractId},
@@ -80,6 +84,13 @@ export const createSignatureService = async ({
         });
 
         await signatureRepo.save(newSignature);
+
+        // 서명 요청 알림 삭제
+        await notificationRepo.delete({
+            user: {id: userId},
+            contract: {contract_id: contractId},
+            notification_type: NotificationType.CONTRACT_CREATION_READY
+        });
 
         // 서명 수 확인
         const count = await signatureRepo.count({

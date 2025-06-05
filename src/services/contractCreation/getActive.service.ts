@@ -3,7 +3,7 @@ import {Contract} from "@/entities/Contract";
 import {Lessor} from "@/entities/Lessor";
 import {Lessee} from "@/entities/Lessee";
 import {Agent} from "@/entities/Agent";
-import {User} from "@/entities/User";
+import {ContractStatus} from "@/enums/ContractStatus";
 
 export const getActiveContractsService = async (
     userId: number,
@@ -41,7 +41,7 @@ export const getActiveContractsService = async (
 
     const contracts = await contractRepo.find({
         where: {
-            contract_status: "PENDING",
+            contract_status: ContractStatus.PENDING,
             [role]: {id: roleId},
         },
         relations: ["lessor", "lessee.user", "property"],

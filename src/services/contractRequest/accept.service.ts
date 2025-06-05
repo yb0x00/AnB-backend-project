@@ -8,6 +8,7 @@ import {NotificationType} from "@/enums/NotificationType";
 import leaseContract from "@/services/blockchain/leaseContract.service"; // 이 서비스 파일의 구현이 중요합니다.
 import {Contract} from "@/entities/Contract";
 import {User} from "@/entities/User";
+import {ContractStatus} from "@/enums/ContractStatus";
 
 // 트랜잭션 확정을 위한 대기 시간 (밀리초)
 const TRANSACTION_CONFIRMATION_TIMEOUT = 60 * 1000; // 60초
@@ -167,7 +168,7 @@ export const acceptContractRequestService = async (
 
         // DB에 새로운 계약 저장
         const newContract = contractRepo.create({
-            contract_status: "PENDING", // 블록체인 처리 후 PENDING 상태로 시작
+            contract_status: ContractStatus.PENDING, // 블록체인 처리 후 PENDING 상태로 시작
             contract_blockchain_id: blockchainContractId,
             contract_blockchain_status: "SUBMITTED", // 트랜잭션은 제출되었음을 의미
             property: contractRequest.property,

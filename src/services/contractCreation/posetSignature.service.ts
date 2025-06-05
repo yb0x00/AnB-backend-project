@@ -1,5 +1,6 @@
 import leaseContract from "@/services/blockchain/leaseContract.service";
 import {ContractStatus} from "@/enums/BlockChainContractStatus";
+import {requestStripePayment} from "@/services/payment/stripe/payDown.service";
 
 export const handlePostSignatureProcess = async (contractId: number): Promise<void> => {
     try {
@@ -15,12 +16,9 @@ export const handlePostSignatureProcess = async (contractId: number): Promise<vo
             console.log(`[결제 조건 충족] 계약 ${contractId} → 결제 진행 시작`);
 
             // 3. Stripe 결제 세션 생성
-            // const paymentUrl = await requestStripePayment(contractId);
-            //
-            // console.log(`[결제 세션 URL] 계약 ${contractId} → ${paymentUrl}`);
+            const paymentUrl = await requestStripePayment(contractId);
 
-            // 예시: DB에 저장하거나 WebSocket 통해 프론트에 전달
-            // await savePaymentSessionUrl(contractId, paymentUrl);
+            console.log(`[결제 세션 URL] 계약 ${contractId} → ${paymentUrl}`);
 
         } else {
             console.log(`[서명완료후처리 중단] 계약 ${contractId} → 상태 AwaitingPayment 아님`);
