@@ -6,6 +6,7 @@ import {Payment} from "@/entities/Payment";
 import {Notification} from "@/entities/Notification";
 import {NotificationType} from "@/enums/NotificationType";
 import {ContractStatus} from "@/enums/ContractStatus";
+import {demoBalancePaymentSchedulerForContract} from "@/services/scheduler/demo_balancePaymentScheduler.service";
 
 const router = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -87,6 +88,21 @@ router.post(
                     await contractRepo.save(contract);
                     message = `매물번호 ${contract.property.property_id}의 계약금 결제가 완료되어 계약이 체결되었습니다.`;
                     notificationType = NotificationType.CONTRACT_DOWN_PAYMENT_CONFIRMED;
+
+                    //시연 - 1분 후 잔금 결제 요청 발송
+                    setTimeout(async () => {
+                        try {
+                            console.log(`[MVP] 계약 ID ${contract.contract_id} - 1분 후 잔금 결제 요청 시작`);
+
+                            // runBalancePaymentSchedulerForContract()는 특정 계약만 대상으로 하는 함수여야 함
+                            await demoBalancePaymentSchedulerForContract(contract.contract_id);
+
+                            console.log(`[MVP] 계약 ID ${contract.contract_id} - 잔금 결제 요청 완료`);
+                        } catch (err) {
+                            console.error(`[MVP][오류] 계약 ID ${contract.contract_id} - 잔금 요청 실패`, err);
+                        }
+                    }, 60 * 1000); // 1분 후 실행
+
                     break;
 
                 case "잔금":

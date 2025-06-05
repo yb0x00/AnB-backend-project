@@ -29,6 +29,7 @@ import getActiveRoutes from "@/routes/contractCreation/getActive.routes";
 import webhookRoutes from "@/routes/payment/stripe/webhook";
 import signatureRoutes from "@/routes/signature.routes";
 import paymentDownRoutes from "@/routes/payment/stripe/paymentDown.routes";
+// import './scheduler/balancePayment.scheduler'; // 스케줄러 실행 등록
 
 dotenv.config();
 
