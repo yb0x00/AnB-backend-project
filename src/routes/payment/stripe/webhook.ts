@@ -72,12 +72,12 @@ router.post(
                 return;
             }
 
-            // ✅ 결제 정보 업데이트
+            // 결제 정보 업데이트
             payment.payment_status = "완료";
             payment.payment_actual_date = new Date();
             await paymentRepo.save(payment);
 
-            // ✅ 상태 및 알림 분기 처리
+            // 상태 및 알림 분기 처리
             let message = "";
             let notificationType: NotificationType;
 
@@ -92,7 +92,7 @@ router.post(
                 case "잔금":
                     contract.contract_status = ContractStatus.BALANCE_PAYMENT_PAID;
                     await contractRepo.save(contract);
-                    message = `매물번호 ${contract.property.property_id}의 잔금이 납부되어 계약이 종료되었습니다.`;
+                    message = `매물번호 ${contract.property.property_id}의 잔금이 납부되었습니다.`;
                     notificationType = NotificationType.CONTRACT_BALANCE_PAYMENT_CONFIRMED;
                     break;
 
@@ -113,6 +113,23 @@ router.post(
                 contract.lessor,
                 contract.agent?.user,
             ].filter(Boolean);
+
+            // 결제 요청 알림 삭제
+            let deleteType: NotificationType | undefined;
+            if (paymentType === "계약금") {
+                deleteType = NotificationType.CONTRACT_DOWN_PAYMENT_REQUEST;
+            } else if (paymentType === "잔금") {
+                deleteType = NotificationType.CONTRACT_BALANCE_PAYMENT_REQUEST;
+            }
+
+            if (deleteType && contract.lessee?.user) {
+                await notificationRepo.delete({
+                    user: contract.lessee.user,
+                    contract,
+                    notification_type: deleteType,
+                });
+                console.log(`[Webhook] ${paymentType} 요청 알림 삭제 완료 (userId=${contract.lessee.user.id})`);
+            }
 
             for (const user of users) {
                 const notification = notificationRepo.create({
