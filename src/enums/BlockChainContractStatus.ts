@@ -1,4 +1,4 @@
-export enum ContractStatus {
+export enum BlockChainContractStatus {
     // 계약 생성 단계 (0~4)
     AwaitingApproval = 0,   // 기본값
     Drafting = 1,

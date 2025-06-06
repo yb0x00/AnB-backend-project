@@ -1,5 +1,5 @@
 import leaseContract from "@/services/blockchain/leaseContract.service";
-import {ContractStatus} from "@/enums/BlockChainContractStatus";
+import {BlockChainContractStatus} from "@/enums/BlockChainContractStatus";
 import {requestStripePayment} from "@/services/payment/stripe/payDown.service";
 
 export const handlePostSignatureProcess = async (contractId: number): Promise<void> => {
@@ -12,7 +12,7 @@ export const handlePostSignatureProcess = async (contractId: number): Promise<vo
         console.log(`[블록체인 상태] 계약 ${contractId} → 상태코드: ${status}`);
 
         // 2. AwaitingPayment 상태인지 확인
-        if (status === ContractStatus.AwaitingPayment) {
+        if (status === BlockChainContractStatus.AwaitingPayment) {
             console.log(`[결제 조건 충족] 계약 ${contractId} → 결제 진행 시작`);
 
             // 3. Stripe 결제 세션 생성
