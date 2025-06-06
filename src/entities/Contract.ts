@@ -12,14 +12,19 @@ import {Agent} from "./Agent";
 import {Signature} from "./Signature";
 import {Payment} from "./Payment";
 import {Lessee} from "./Lessee";
+import {ContractStatus} from "@/enums/ContractStatus";
 
 @Entity("contracts")
 export class Contract {
     @PrimaryGeneratedColumn()
     contract_id!: number;
 
-    @Column({length: 20})
-    contract_status!: string;
+    @Column({
+        type: "enum",
+        enum: ContractStatus,
+        nullable: true,
+    })
+    contract_status: ContractStatus | null = null;
 
     @CreateDateColumn()
     contract_created_at!: Date;

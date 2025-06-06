@@ -78,4 +78,7 @@ export class ContractDetail {
 
     @Column({type: "text", nullable: true})
     special_terms?: string;
+
+    @Column({type: "date"})
+    contract_written_at!: Date;
 }

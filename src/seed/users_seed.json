@@ -1,7 +1,7 @@
 [
   {
     "login_id": "agent1",
-    "user_name": "이은수",
+    "user_name": "일은수",
     "email": "agent01@example.com",
     "password": "1234",
     "wallet_address": "0x7f3c73e29b85dd4a5bd5b689f671c47f3ab17e46",
@@ -11,16 +11,16 @@
   },
   {
     "login_id": "lessor1",
-    "user_name": "최영빈",
+    "user_name": "일영빈",
     "email": "lessor01@example.com",
     "password": "1234",
-    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "wallet_address": "0x1a6b99d73a6003b46c367df1d9cd4d993f9c2519",
     "role": "lessor",
     "phone": "010-2222-2221"
   },
   {
     "login_id": "lessee1",
-    "user_name": "최은별",
+    "user_name": "일은별",
     "email": "lessee01@example.com",
     "password": "1234",
     "wallet_address": "0x8e6a9ee0cb8e041d1f0369b356584caf756c7093",
@@ -39,16 +39,16 @@
   },
   {
     "login_id": "lessor2",
-    "user_name": "최영빈",
+    "user_name": "이영빈",
     "email": "lessor02@example.com",
     "password": "1234",
-    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "wallet_address": "0x1a6b99d73a6003b46c367df1d9cd4d993f9c2519",
     "role": "lessor",
     "phone": "010-2222-2222"
   },
   {
     "login_id": "lessee2",
-    "user_name": "최은별",
+    "user_name": "이은별",
     "email": "lessee02@example.com",
     "password": "1234",
     "wallet_address": "0x8e6a9ee0cb8e041d1f0369b356584caf756c7093",
@@ -57,7 +57,7 @@
   },
   {
     "login_id": "agent3",
-    "user_name": "이은수",
+    "user_name": "삼은수",
     "email": "agent03@example.com",
     "password": "1234",
     "wallet_address": "0x7f3c73e29b85dd4a5bd5b689f671c47f3ab17e46",
@@ -67,16 +67,16 @@
   },
   {
     "login_id": "lessor3",
-    "user_name": "최영빈",
+    "user_name": "삼영빈",
     "email": "lessor03@example.com",
     "password": "1234",
-    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "wallet_address": "0x1a6b99d73a6003b46c367df1d9cd4d993f9c2519",
     "role": "lessor",
     "phone": "010-2222-2223"
   },
   {
     "login_id": "lessee3",
-    "user_name": "최은별",
+    "user_name": "삼은별",
     "email": "lessee03@example.com",
     "password": "1234",
     "wallet_address": "0x8e6a9ee0cb8e041d1f0369b356584caf756c7093",
@@ -85,7 +85,7 @@
   },
   {
     "login_id": "agent4",
-    "user_name": "이은수",
+    "user_name": "사은수",
     "email": "agent04@example.com",
     "password": "1234",
     "wallet_address": "0x7f3c73e29b85dd4a5bd5b689f671c47f3ab17e46",
@@ -95,16 +95,16 @@
   },
   {
     "login_id": "lessor4",
-    "user_name": "최영빈",
+    "user_name": "사영빈",
     "email": "lessor04@example.com",
     "password": "1234",
-    "wallet_address": "0xf7b426564a8838fac3f783b5590a87185f30f37b",
+    "wallet_address": "0x1a6b99d73a6003b46c367df1d9cd4d993f9c2519",
     "role": "lessor",
     "phone": "010-2222-2224"
   },
   {
     "login_id": "lessee4",
-    "user_name": "최은별",
+    "user_name": "사은별",
     "email": "lessee04@example.com",
     "password": "1234",
     "wallet_address": "0x8e6a9ee0cb8e041d1f0369b356584caf756c7093",

@@ -25,10 +25,17 @@ import acceptContractRequest from "./routes/contractRequest/accept.routes";
 import getContractRequest from "./routes/contractCreation/get.routes";
 import writeDetailRoutes from "@/routes/contractCreation/writeDetail.routes";
 import getDetailRoutes from "@/routes/contractCreation/getDetail.routes";
+import getActiveRoutes from "@/routes/contractCreation/getActive.routes";
+import webhookRoutes from "@/routes/payment/stripe/webhook";
+import signatureRoutes from "@/routes/signature.routes";
+import paymentDownRoutes from "@/routes/payment/stripe/paymentDown.routes";
+// import './scheduler/balancePayment.scheduler'; // 스케줄러 실행 등록
 
 dotenv.config();
 
 const app = express();
+
+app.use("/api", webhookRoutes);
 
 app.use(express.json());
 app.use(morgan("dev"));
@@ -44,7 +51,10 @@ app.use("/api", requestContractRoutes);
 app.use("/api", acceptContractRequest);
 app.use("/api", getContractRequest);
 app.use("/api", writeDetailRoutes);
-app.use("/api", getDetailRoutes)
+app.use("/api", getDetailRoutes);
+app.use("/api", getActiveRoutes);
+app.use("/api", signatureRoutes);
+app.use("/api", paymentDownRoutes);
 
 let port = Number(process.env.PORT) || 4000;
 

@@ -12,7 +12,7 @@ export const loginService = async (
     user: {
         userId: number;
         user_name: string;
-        role: "agent" | "lessor" | "lessee" | null;
+        role: "agent" | "lessor" | "lessee";
         property_id: number;
     };
 }> => {
@@ -28,10 +28,15 @@ export const loginService = async (
     }
 
     const role = await findUserRole(user.id);
+    if (!role) {
+        throw new Error("User has no assigned role");
+    }
+
     console.log("로그인 시 유저 role:", role);
 
     const secret = process.env.JWT_SECRET as string;
     const expiresIn = "30d";
+
 
     const token = jwt.sign(
         {userId: user.id, wallet_address: user.wallet_address, role},
@@ -94,7 +99,7 @@ export const loginService = async (
         user: {
             userId: user.id,
             user_name: user.user_name,
-            role,
+            role: role,
             property_id: property.property_id,
         },
     };
