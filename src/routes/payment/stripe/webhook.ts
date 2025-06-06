@@ -71,7 +71,9 @@ router.post(
             );
 
             if (!payment || !payment.payment_actual_date) {
-                console.warn(`[Webhook] Payment not found or missing payment_actual_date for contractId=${contractId}, type=${paymentType}`);
+                console.warn(
+                    `[Webhook] Payment not found or missing payment_actual_date for contractId=${contractId}, type=${paymentType}`
+                );
                 res.status(404).send("Payment not found or missing payment_actual_date");
                 return;
             }
@@ -80,6 +82,14 @@ router.post(
             payment.payment_actual_date = new Date();
             await paymentRepo.save(payment);
 
+            const users = [
+                contract.lessee?.user,
+                contract.lessor,
+                contract.agent?.user,
+            ].filter(Boolean);
+
+            const userMessageMap = new Map<number, string>();
+
             let message = "";
             let notificationType: NotificationType;
 
@@ -87,8 +97,25 @@ router.post(
                 case "계약금":
                     contract.contract_status = ContractStatus.DOWN_PAYMENT_PAID;
                     await contractRepo.save(contract);
-                    message = `매물번호 ${contract.property.property_id}의 계약금 결제가 완료되어 계약이 체결되었습니다.`;
+
                     notificationType = NotificationType.CONTRACT_DOWN_PAYMENT_CONFIRMED;
+
+                    const lesseeUserId = contract.lessee?.user?.id;
+                    const propertyId = contract.property.property_id;
+
+                    if (lesseeUserId) {
+                        userMessageMap.set(
+                            lesseeUserId,
+                            `계약금이 성공적으로 납부되었습니다! 곧 잔금 결제 요청이 전송될 예정입니다.`
+                        );
+                    }
+
+                    const defaultMessage = `매물번호 ${propertyId}의 계약금 결제가 완료되어 계약이 체결되었습니다.`;
+                    users.forEach((user) => {
+                        if (!userMessageMap.has(user.id)) {
+                            userMessageMap.set(user.id, defaultMessage);
+                        }
+                    });
 
                     setTimeout(async () => {
                         try {
@@ -108,7 +135,7 @@ router.post(
                     notificationType = NotificationType.CONTRACT_BALANCE_PAYMENT_CONFIRMED;
 
                     try {
-                        const downPayment = contract.payments.find(p => p.payment_type === "계약금");
+                        const downPayment = contract.payments.find((p) => p.payment_type === "계약금");
 
                         if (!downPayment?.payment_actual_date) {
                             console.error("[Webhook] 계약금 결제일이 존재하지 않습니다.");
@@ -118,8 +145,8 @@ router.post(
 
                         const downPaymentTimestamp = downPayment.payment_actual_date.getTime();
                         const balancePaymentTimestamp = payment.payment_actual_date.getTime();
-
                         const blockchainId = contract.contract_blockchain_id;
+
                         if (blockchainId != null) {
                             console.log(`[Blockchain] confirmFullyPaid 호출 시작 - contractId=${contract.contract_id}`);
                             await confirmFullyPaid(
@@ -162,12 +189,6 @@ router.post(
                     return;
             }
 
-            const users = [
-                contract.lessee?.user,
-                contract.lessor,
-                contract.agent?.user,
-            ].filter(Boolean);
-
             let deleteType: NotificationType | undefined;
             if (paymentType === "계약금") {
                 deleteType = NotificationType.CONTRACT_DOWN_PAYMENT_REQUEST;
@@ -185,10 +206,12 @@ router.post(
             }
 
             for (const user of users) {
+                const userMessage = userMessageMap.get(user.id) ?? message;
+
                 const notification = notificationRepo.create({
                     user,
                     notification_type: notificationType,
-                    notification_message: message,
+                    notification_message: userMessage,
                     is_read: false,
                     contract,
                     payment,
