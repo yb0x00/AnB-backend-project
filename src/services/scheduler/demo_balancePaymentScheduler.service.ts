@@ -28,8 +28,8 @@ export const demoBalancePaymentSchedulerForContract = async (contractId: number)
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         customer_email: contract.lessee.user.email,
-        // success_url: `${process.env.FRONTEND_URL}/success`,
-        // cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+        success_url: "https://battle-reminder-0a6.notion.site/Success-20b68585295e80229f56da07c6085169",
+        cancel_url: "https://battle-reminder-0a6.notion.site/Error-20b68585295e80f4b6a9c86650d049a2",
         line_items: [
             {
                 price_data: {

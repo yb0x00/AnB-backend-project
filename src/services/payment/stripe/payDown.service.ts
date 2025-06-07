@@ -46,9 +46,8 @@ export const requestStripePayment = async (contractId: number): Promise<void> =>
             },
         ],
         mode: "payment",
-        //우선 프론트 URL 없이 실행
-        //success_url: `${process.env.FRONTEND_URL}/payment/success?contractId=${contractId}`,
-        //cancel_url: `${process.env.FRONTEND_URL}/payment/cancel`,
+        success_url: "https://battle-reminder-0a6.notion.site/Success-20b68585295e80229f56da07c6085169",
+        cancel_url: "https://battle-reminder-0a6.notion.site/Error-20b68585295e80f4b6a9c86650d049a2",
         metadata: {
             contractId: String(contractId),
             lesseeId: String(contract.lessee.id),

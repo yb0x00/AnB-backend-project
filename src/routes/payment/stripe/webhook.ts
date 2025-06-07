@@ -38,6 +38,20 @@ router.post(
             const contractId = Number(session.metadata?.contractId);
             const paymentType = session.metadata?.paymentType;
 
+            // 테스트 분기 처리
+            if (paymentType === "테스트") {
+                console.log("Webhook 테스트 수신 성공");
+                console.log("metadata:", session.metadata);
+                res.status(200).json({
+                    test: true,
+                    message: "Webhook 테스트 수신 성공",
+                    contractId,
+                    paymentType,
+                });
+                return;
+            }
+
+            // 실 데이터 처리
             if (!contractId || !paymentType) {
                 res.status(400).send("Missing metadata");
                 return;
@@ -70,11 +84,9 @@ router.post(
                 (p) => p.payment_type === paymentType && p.payment_status === "대기"
             );
 
-            if (!payment || !payment.payment_actual_date) {
-                console.warn(
-                    `[Webhook] Payment not found or missing payment_actual_date for contractId=${contractId}, type=${paymentType}`
-                );
-                res.status(404).send("Payment not found or missing payment_actual_date");
+            if (!payment) {
+                console.warn(`[Webhook] Payment not found for contractId=${contractId}, type=${paymentType}`);
+                res.status(404).send("Payment not found");
                 return;
             }
 
@@ -89,7 +101,6 @@ router.post(
             ].filter(Boolean);
 
             const userMessageMap = new Map<number, string>();
-
             let message = "";
             let notificationType: NotificationType;
 
@@ -99,7 +110,6 @@ router.post(
                     await contractRepo.save(contract);
 
                     notificationType = NotificationType.CONTRACT_DOWN_PAYMENT_CONFIRMED;
-
                     const lesseeUserId = contract.lessee?.user?.id;
                     const propertyId = contract.property.property_id;
 
@@ -136,9 +146,7 @@ router.post(
 
                     try {
                         const downPayment = contract.payments.find((p) => p.payment_type === "계약금");
-
                         if (!downPayment?.payment_actual_date) {
-                            console.error("[Webhook] 계약금 결제일이 존재하지 않습니다.");
                             res.status(500).send("Missing down payment date");
                             return;
                         }
@@ -148,7 +156,6 @@ router.post(
                         const blockchainId = contract.contract_blockchain_id;
 
                         if (blockchainId != null) {
-                            console.log(`[Blockchain] confirmFullyPaid 호출 시작 - contractId=${contract.contract_id}`);
                             await confirmFullyPaid(
                                 blockchainId,
                                 BigInt(Math.floor(downPaymentTimestamp / 1000)),
@@ -161,16 +168,8 @@ router.post(
 
                             for (let i = 0; i < maxRetries; i++) {
                                 statusOnChain = await getContractStatus(blockchainId);
-                                if (statusOnChain === BlockChainContractStatus.Confirmed) {
-                                    console.log(`[Blockchain] 계약 상태 CONFIRMED 확인 완료 - contractId=${contract.contract_id}`);
-                                    break;
-                                }
-                                console.log(`[Blockchain] 상태 대기 중 (${i + 1}/${maxRetries})...`);
+                                if (statusOnChain === BlockChainContractStatus.Confirmed) break;
                                 await new Promise((res) => setTimeout(res, delay));
-                            }
-
-                            if (statusOnChain !== BlockChainContractStatus.Confirmed) {
-                                console.warn(`[Blockchain] 계약 상태 CONFIRMED 되지 않음 - contractId=${contract.contract_id}`);
                             }
                         }
                     } catch (err) {
@@ -184,7 +183,6 @@ router.post(
                     break;
 
                 default:
-                    console.warn(`[Webhook] Unknown payment type: ${paymentType}`);
                     res.status(400).send("Unknown paymentType");
                     return;
             }
@@ -202,7 +200,6 @@ router.post(
                     contract,
                     notification_type: deleteType,
                 });
-                console.log(`[Webhook] ${paymentType} 요청 알림 삭제 완료 (userId=${contract.lessee.user.id})`);
             }
 
             for (const user of users) {
