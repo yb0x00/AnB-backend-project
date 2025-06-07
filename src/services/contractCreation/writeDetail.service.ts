@@ -28,7 +28,6 @@ export const createContractDetailService = async (
             "lessee",
             "lessee.user",
             "lessor",
-            "lessor.user",
             "property"
         ]
     });
