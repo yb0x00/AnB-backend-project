@@ -3,9 +3,9 @@ import {Contract} from "@/entities/Contract";
 import {ContractDetail} from "@/entities/ContractDetail";
 import {Notification} from "@/entities/Notification";
 import {NotificationType} from "@/enums/NotificationType";
-import {User} from "@/entities/User";
 import {createHash} from "crypto";
 import {shareContract} from "@/services/blockchain/shareContract";
+import {Lessor} from "@/entities/Lessor";
 
 export const createContractDetailService = async (
     contractId: number,
@@ -15,7 +15,7 @@ export const createContractDetailService = async (
     const contractRepo = AppDataSource.getRepository(Contract);
     const detailRepo = AppDataSource.getRepository(ContractDetail);
     const notificationRepo = AppDataSource.getRepository(Notification);
-    const userRepo = AppDataSource.getRepository(User);
+    const lessorRepo = AppDataSource.getRepository(Lessor);
 
     console.log("contractId param:", contractId);
     console.log("agentUserId param:", agentUserId);
@@ -28,6 +28,7 @@ export const createContractDetailService = async (
             "lessee",
             "lessee.user",
             "lessor",
+            "lessor.user",
             "property"
         ]
     });
@@ -79,11 +80,25 @@ export const createContractDetailService = async (
 
         // 6. 알림 전송
         const propertyNumber = contract.property.property_number;
-        const message = `***${propertyNumber}번 매물에 대한 계약서 작성이 완료되었습니다. 확인 후 서명해 주세요.`;
-        const targets = [contract.lessor.id, contract.lessee.user.id];
 
-        for (const userId of targets) {
-            const user = await userRepo.findOneByOrFail({id: userId});
+        const messageForLessorLessee = `***${propertyNumber}번 매물에 대한 계약서 작성이 완료되었습니다. 확인 후 서명해 주세요.`;
+        const messageForAgent = `***${propertyNumber}번 매물 계약서가 성공적으로 저장되었습니다. 본인 서명을 완료해 주세요.`;
+
+        // Lessor user 조회
+        const lessor = await lessorRepo.findOne({
+            where: {id: contract.lessor.id},
+            relations: ["user"]
+        });
+        if (!lessor) throw new Error("lessor not found");
+
+        // 알림 대상 + 메시지 구성
+        const usersWithMessages = [
+            {user: lessor.user, message: messageForLessorLessee},
+            {user: contract.lessee.user, message: messageForLessorLessee},
+            {user: contract.agent.user, message: messageForAgent}
+        ];
+
+        for (const {user, message} of usersWithMessages) {
             const newNotification = notificationRepo.create({
                 user,
                 contract,

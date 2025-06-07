@@ -32,6 +32,7 @@ import paymentDownRoutes from "@/routes/payment/stripe/paymentDown.routes";
 // import './scheduler/balancePayment.scheduler'; // 스케줄러 실행 등록
 //test
 import paymentTestRoute from "@/routes/test/paymentTest.route";
+import getContractStatusRoutes from "@/routes/blockchain/getContractStatus.routes";
 
 dotenv.config();
 
@@ -59,6 +60,7 @@ app.use("/api", signatureRoutes);
 app.use("/api", paymentDownRoutes);
 
 app.use("/api", paymentTestRoute)
+app.use("/api", getContractStatusRoutes)
 
 let port = Number(process.env.PORT) || 4000;
 
