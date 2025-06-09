@@ -16,7 +16,11 @@ export const requestStripePayment = async (contractId: number): Promise<void> =>
 
     const contract = await contractRepo.findOne({
         where: {contract_id: contractId},
-        relations: ["lessee", "lessee.user", "property"],
+        // relations 배열에서 "lessee.user"를 제거합니다.
+        // TypeORM이 Lessee 엔티티를 로드하면 그 안에 정의된 user 관계는
+        // 대부분 자동으로 로드되거나, 필요할 때 지연 로딩됩니다.
+        // 중복해서 "lessee.user"를 명시하면 내부적으로 혼동을 줄 수 있습니다.
+        relations: ["lessee", "property"],
     });
 
     if (!contract) throw new Error("계약 정보를 찾을 수 없습니다.");
@@ -27,7 +31,9 @@ export const requestStripePayment = async (contractId: number): Promise<void> =>
 
     if (!detail) throw new Error("계약 세부 정보가 없습니다.");
 
-    const amount = Number(detail.contract_down_payment); // bigint → number
+    const amount = Number(detail.contract_down_payment);
+    // contract.lessee.user.email 접근은 그대로 둡니다.
+    // contract.lessee는 Lessee 객체이고, Lessee 객체 안에 user라는 User 타입의 프로퍼티가 있습니다.
     const customerEmail = contract.lessee.user.email;
 
     const session = await stripe.checkout.sessions.create({
@@ -68,8 +74,8 @@ export const requestStripePayment = async (contractId: number): Promise<void> =>
         await paymentRepo.save(payment);
 
         // --- 알림 생성 ---
+        // contract.lessee.user 접근은 그대로 둡니다.
         const lesseeUser = contract.lessee.user;
-        // Ensure property relation is loaded for propertyId
         const propertyId = contract.property.property_id;
 
         const notification = notificationRepo.create({

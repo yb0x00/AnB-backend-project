@@ -67,11 +67,11 @@ router.post(
                     "payments",
                     "property",
                     "lessee",
-                    "lessee.user",
+                    //"lessee.user",
                     "lessor",
-                    "lessor.user",
+                    //"lessor.user",
                     "agent",
-                    "agent.user",
+                    //"agent.user",
                 ],
             });
 
