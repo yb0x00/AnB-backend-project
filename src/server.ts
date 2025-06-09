@@ -27,8 +27,10 @@ import writeDetailRoutes from "@/routes/contractCreation/writeDetail.routes";
 import getDetailRoutes from "@/routes/contractCreation/getDetail.routes";
 import getActiveRoutes from "@/routes/contractCreation/getActive.routes";
 import webhookRoutes from "@/routes/payment/stripe/webhook";
-import signatureRoutes from "@/routes/signature.routes";
+import signatureRoutes from "@/routes/signature/signature.routes";
 import paymentDownRoutes from "@/routes/payment/stripe/paymentDown.routes";
+
+import backendSignatureRoutes from "@/routes/signature/backendSignature.routes";
 // import './scheduler/balancePayment.scheduler'; // 스케줄러 실행 등록
 //test
 import paymentTestRoute from "@/routes/test/paymentTest.route";
@@ -58,6 +60,8 @@ app.use("/api", getDetailRoutes);
 app.use("/api", getActiveRoutes);
 app.use("/api", signatureRoutes);
 app.use("/api", paymentDownRoutes);
+
+app.use("/api", backendSignatureRoutes);
 
 app.use("/api", paymentTestRoute)
 app.use("/api", getContractStatusRoutes)

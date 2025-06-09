@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {createSignatureController} from "@/controllers/signature.controller";
+import {createSignatureController} from "@/controllers/signature/signature.controller";
 import {authenticate} from "@/middleware/auth.middleware";
 
 const router = Router();

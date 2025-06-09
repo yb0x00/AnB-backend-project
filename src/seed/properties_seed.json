@@ -1,6 +1,6 @@
 [
   {
-    "property_id": 47,
+    "property_id": 53,
     "property_headline": "화이트톤의 깔끔한 풀옵션 월룸",
     "property_address_lot": "서울시 강남구 논현동 1223-45",
     "property_building_usage": "다가구",
@@ -13,7 +13,7 @@
     "lessor_email": "lessor01@example.com"
   },
   {
-    "property_id": 48,
+    "property_id": 54,
     "property_headline": "화이트톤의 깔끔한 풀옵션 월룸",
     "property_address_lot": "서울시 강남구 논현동 678-91",
     "property_building_usage": "다가구",
@@ -26,7 +26,7 @@
     "lessor_email": "lessor02@example.com"
   },
   {
-    "property_id": 49,
+    "property_id": 55,
     "property_headline": "화이트톤의 깔끔한 풀옵션 월룸",
     "property_address_lot": "서울시 강남구 논현동 1112-13",
     "property_building_usage": "다가구",
@@ -39,7 +39,7 @@
     "lessor_email": "lessor03@example.com"
   },
   {
-    "property_id": 50,
+    "property_id": 56,
     "property_headline": "화이트톤의 깔끔한 풀옵션 월룸",
     "property_address_lot": "서울시 강남구 논현동 141-56",
     "property_building_usage": "다가구",

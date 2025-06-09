@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createSignatureService } from "@/services/signature.service";
+import { createSignatureService } from "@/services/signature/signature.service";
 
 export const createSignatureController = async (req: Request, res: Response): Promise<void> => {
     try {
