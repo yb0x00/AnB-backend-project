@@ -1,6 +1,7 @@
 import {AppDataSource} from "@/data-source";
 import {Payment} from "@/entities/Payment";
 import {Contract} from "@/entities/Contract";
+import {ContractDetail} from "@/entities/ContractDetail";
 import {Notification} from "@/entities/Notification";
 import Stripe from "stripe";
 import {NotificationType} from "@/enums/NotificationType";
@@ -9,24 +10,27 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 export const demoBalancePaymentSchedulerForContract = async (contractId: number) => {
     const contractRepo = AppDataSource.getRepository(Contract);
-    const notificationRepo = AppDataSource.getRepository(Notification);
+    const detailRepo = AppDataSource.getRepository(ContractDetail);
     const paymentRepo = AppDataSource.getRepository(Payment);
+    const notificationRepo = AppDataSource.getRepository(Notification);
 
     const contract = await contractRepo.findOne({
         where: {contract_id: contractId},
-        relations: ['lessee', 'lessee.user', 'property', 'payments'],
+        relations: ["lessee", "lessee.user", "property"],
     });
 
-    if (!contract) {
-        throw new Error("Contract not found");
-    }
+    if (!contract) throw new Error("Contract not found");
 
+    const detail = await detailRepo.findOne({
+        where: {contract: {contract_id: contractId}},
+    });
+
+    if (!detail) throw new Error("Contract detail not found");
+
+    const amount = Number(detail.contract_balance_payment);
     const lesseeUser = contract.lessee?.user;
-    const payment = contract.payments.find(
-        (p) => p.payment_type === '잔금' && p.payment_status === '대기'
-    );
 
-    if (!lesseeUser || !payment) {
+    if (!lesseeUser || !amount) {
         console.warn(`[잔금 스케줄러] 계약 ${contractId}의 결제 또는 유저 정보 없음`);
         return;
     }
@@ -43,7 +47,7 @@ export const demoBalancePaymentSchedulerForContract = async (contractId: number)
                     product_data: {
                         name: `잔금 결제 - 계약 ID ${contract.contract_id}`,
                     },
-                    unit_amount: Number(payment.payment_amount), // bigint → number 변환
+                    unit_amount: amount,
                 },
                 quantity: 1,
             },
@@ -61,7 +65,14 @@ export const demoBalancePaymentSchedulerForContract = async (contractId: number)
         throw new Error("Stripe 세션 URL이 생성되지 않았습니다.");
     }
 
-    payment.payment_session_url = session.url;
+    const payment = paymentRepo.create({
+        contract,
+        payment_type: "잔금",
+        payment_amount: amount,
+        payment_method: "Stripe",
+        payment_status: "대기",
+        payment_session_url: session.url,
+    });
     await paymentRepo.save(payment);
 
     const notification = notificationRepo.create({
@@ -72,8 +83,7 @@ export const demoBalancePaymentSchedulerForContract = async (contractId: number)
         contract,
         payment,
     });
-
     await notificationRepo.save(notification);
 
-    console.log(`[잔금 스케줄러] 계약 ${contractId}에 대한 결제 세션 및 알림 생성 완료`);
+    console.log(`[잔금 스케줄러] 계약 ${contractId} → 결제 세션 및 알림 생성 완료`);
 };
