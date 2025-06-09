@@ -1,647 +1,820 @@
 [
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "agent",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "agentConfirmAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "AgentSigned",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "propertyId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ContractCreated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "depositDownPaymentAt",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "depositBalanceAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "ContractFullyPaid",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "oldContractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newContractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "ContractModified",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "bool",
-        "name": "isRenewed",
-        "type": "bool"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "newEndDate",
-        "type": "uint256"
-      }
-    ],
-    "name": "ContractRenewed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "contractHash",
-        "type": "string"
-      }
-    ],
-    "name": "ContractShared",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "contractHash",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "lesseeConfirmAt",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "lessorConfirmAt",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "agentConfirmAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "ContractSignaturesConfirmed",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "depositRefundAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "ContractTerminated",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "lessee",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "lesseeConfirmAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "LesseeSigned",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "lessor",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "lessorConfirmAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "LessorSigned",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_penalty",
-        "type": "bool"
-      }
-    ],
-    "name": "TerminatePenalty",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_depositDownPaymentAt",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_depositBalanceAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "confirmFullyPaid",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "propertyId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "address",
-            "name": "lesseeId",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "lessorId",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "agentId",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct LeaseContract.LeaseInitParams",
-        "name": "_params",
-        "type": "tuple"
-      }
-    ],
-    "name": "createContract",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_propertyId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getContractId",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getContractStatus",
-    "outputs": [
-      {
-        "internalType": "enum LeaseContract.ContractStatus",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "handleImplicitRenewal",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "leaseCounter",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "leases",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "contractId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "propertyId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum LeaseContract.ContractStatus",
-        "name": "state",
-        "type": "uint8"
-      },
-      {
-        "internalType": "string",
-        "name": "contractHash",
-        "type": "string"
-      },
-      {
-        "components": [
-          {
-            "internalType": "address",
-            "name": "lesseeId",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "lessorId",
-            "type": "address"
-          },
-          {
-            "internalType": "address",
-            "name": "agentId",
-            "type": "address"
-          }
-        ],
-        "internalType": "struct LeaseContract.Parties",
-        "name": "parties",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "startDate",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "endDate",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "lesseeConfirmAt",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "lessorConfirmAt",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "agentConfirmAt",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct LeaseContract.Dates",
-        "name": "dates",
-        "type": "tuple"
-      },
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "depositDownPaymentAt",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "depositBalanceAt",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "depositRefundAt",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct LeaseContract.Payments",
-        "name": "payments",
-        "type": "tuple"
-      },
-      {
-        "internalType": "uint8",
-        "name": "version",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bool",
-        "name": "isRenewed",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isTerminatedEarly",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_EarlyTerminationDate",
-        "type": "uint256"
-      }
-    ],
-    "name": "requestEarlyTermination",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "requestModification",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "requestTermination",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "setAwaitingExtension",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_finalContractHash",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_startDate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_endDate",
-        "type": "uint256"
-      }
-    ],
-    "name": "shareContract",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "signByAgent",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "signByLessee",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      }
-    ],
-    "name": "signByLessor",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_contractId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_depositRefundAt",
-        "type": "uint256"
-      }
-    ],
-    "name": "terminateContract",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  }
-]
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "agent",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "agentConfirmAt",
+          "type": "uint256"
+        }
+      ],
+      "name": "AgentSigned",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "propertyId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContractCreated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "depositDownPaymentAt",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "depositBalanceAt",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContractFullyPaid",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "oldContractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newContractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContractModified",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "isRenewed",
+          "type": "bool"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "newEndDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContractRenewed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "contractHash",
+          "type": "string"
+        }
+      ],
+      "name": "ContractShared",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "contractHash",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "lesseeConfirmAt",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "lessorConfirmAt",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "agentConfirmAt",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContractSignaturesConfirmed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "depositRefundAt",
+          "type": "uint256"
+        }
+      ],
+      "name": "ContractTerminated",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "lessee",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "lesseeConfirmAt",
+          "type": "uint256"
+        }
+      ],
+      "name": "LesseeSigned",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "lessor",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "lessorConfirmAt",
+          "type": "uint256"
+        }
+      ],
+      "name": "LessorSigned",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "_penalty",
+          "type": "bool"
+        }
+      ],
+      "name": "TerminatePenalty",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_depositDownPaymentAt",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_depositBalanceAt",
+          "type": "uint256"
+        }
+      ],
+      "name": "confirmFullyPaid",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "propertyId",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "lesseeId",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "lessorId",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "agentId",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct LeaseContract.LeaseInitParams",
+          "name": "_params",
+          "type": "tuple"
+        }
+      ],
+      "name": "createContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_propertyId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getContractId",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getContractStatus",
+      "outputs": [
+        {
+          "internalType": "enum LeaseContract.ContractStatus",
+          "name": "",
+          "type": "uint8"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_propertyId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getContractsByProperty",
+      "outputs": [
+        {
+          "internalType": "uint256[]",
+          "name": "",
+          "type": "uint256[]"
+        },
+        {
+          "internalType": "enum LeaseContract.ContractStatus[]",
+          "name": "",
+          "type": "uint8[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getLeaseById",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "propertyId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum LeaseContract.ContractStatus",
+          "name": "state",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "contractHash",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "lesseeId",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "lessorId",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "agentId",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct LeaseContract.Parties",
+          "name": "parties",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "startDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "endDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lesseeConfirmAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lessorConfirmAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "agentConfirmAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct LeaseContract.Dates",
+          "name": "dates",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "depositDownPaymentAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "depositBalanceAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "depositRefundAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct LeaseContract.Payments",
+          "name": "payments",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint256",
+          "name": "version",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bool",
+          "name": "isRenewed",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "isTerminatedEarly",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "handleImplicitRenewal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "leaseCounter",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "leases",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "contractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "propertyId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "enum LeaseContract.ContractStatus",
+          "name": "state",
+          "type": "uint8"
+        },
+        {
+          "internalType": "string",
+          "name": "contractHash",
+          "type": "string"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address",
+              "name": "lesseeId",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "lessorId",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "agentId",
+              "type": "address"
+            }
+          ],
+          "internalType": "struct LeaseContract.Parties",
+          "name": "parties",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "startDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "endDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lesseeConfirmAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lessorConfirmAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "agentConfirmAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct LeaseContract.Dates",
+          "name": "dates",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "depositDownPaymentAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "depositBalanceAt",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "depositRefundAt",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct LeaseContract.Payments",
+          "name": "payments",
+          "type": "tuple"
+        },
+        {
+          "internalType": "uint8",
+          "name": "version",
+          "type": "uint8"
+        },
+        {
+          "internalType": "bool",
+          "name": "isRenewed",
+          "type": "bool"
+        },
+        {
+          "internalType": "bool",
+          "name": "isTerminatedEarly",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "propertyToContractIds",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_EarlyTerminationDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "requestEarlyTermination",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "requestModification",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "requestTermination",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "setAwaitingExtension",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "string",
+          "name": "_finalContractHash",
+          "type": "string"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_startDate",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_endDate",
+          "type": "uint256"
+        }
+      ],
+      "name": "shareContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "signByAgent",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "signByLessee",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        }
+      ],
+      "name": "signByLessor",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_contractId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_depositRefundAt",
+          "type": "uint256"
+        }
+      ],
+      "name": "terminateContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
