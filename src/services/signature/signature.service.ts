@@ -150,7 +150,10 @@ export const createSignatureService = async ({
         if (count === 3) {
             console.log("모든 서명 완료 – 후속 처리 시작");
             setImmediate(() => {
-                handlePostSignatureProcess(contractId).catch(console.error);
+                handlePostSignatureProcess({
+                    contractId: contractId,
+                    contractBlockchainId: contract.contract_blockchain_id!,
+                });
             });
         }
     });

@@ -16,7 +16,7 @@ export const requestStripePayment = async (contractId: number): Promise<void> =>
 
     const contract = await contractRepo.findOne({
         where: {contract_id: contractId},
-        relations: ["lessee", "lessee.user"],
+        relations: ["lessee", "lessee.user", "property"],
     });
 
     if (!contract) throw new Error("계약 정보를 찾을 수 없습니다.");

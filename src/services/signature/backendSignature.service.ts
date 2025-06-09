@@ -134,9 +134,12 @@ export const createBackendSignatureService = async ({
             where: {contract: {contract_id: contract.contract_id}},
         });
 
-        if (signatureCount === 3) {
+        if (signatureCount === 3 && contract.contract_blockchain_id != null) {
             setImmediate(() => {
-                handlePostSignatureProcess(contract.contract_id).catch(console.error);
+                handlePostSignatureProcess({
+                    contractId: contract.contract_id,
+                    contractBlockchainId: contract.contract_blockchain_id!,
+                }).catch(console.error);
             });
         }
     });

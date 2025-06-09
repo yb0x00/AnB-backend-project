@@ -2,12 +2,18 @@ import leaseContract from "@/services/blockchain/leaseContract.service";
 import {BlockChainContractStatus} from "@/enums/BlockChainContractStatus";
 import {requestStripePayment} from "@/services/payment/stripe/payDown.service";
 
-export const handlePostSignatureProcess = async (contractId: number): Promise<void> => {
+export const handlePostSignatureProcess = async ({
+                                                     contractId,
+                                                     contractBlockchainId
+                                                 }: {
+    contractId: number;
+    contractBlockchainId: number;
+}): Promise<void> => {
     try {
         console.log(`[서명완료후처리] 계약 ${contractId} → 블록체인 상태 조회 중...`);
 
         // 1. getContractStatus(contractId) 호출
-        const status: number = await leaseContract.getContractStatus(contractId);
+        const status: number = await leaseContract.getContractStatus(contractBlockchainId);
 
         console.log(`[블록체인 상태] 계약 ${contractId} → 상태코드: ${status}`);
 
