@@ -1,9 +1,9 @@
-import { AppDataSource } from "@/data-source";
-import { Payment } from "@/entities/Payment";
-import { Contract } from "@/entities/Contract";
-import { Notification } from "@/entities/Notification";
+import {AppDataSource} from "@/data-source";
+import {Payment} from "@/entities/Payment";
+import {Contract} from "@/entities/Contract";
+import {Notification} from "@/entities/Notification";
 import Stripe from "stripe";
-import { NotificationType } from "@/enums/NotificationType";
+import {NotificationType} from "@/enums/NotificationType";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
@@ -13,8 +13,8 @@ export const demoBalancePaymentSchedulerForContract = async (contractId: number)
     const paymentRepo = AppDataSource.getRepository(Payment);
 
     const contract = await contractRepo.findOne({
-        where: { contract_id: contractId },
-        relations: ['contract_detail', 'lessee', 'lessee.user', 'property', 'payments'],
+        where: {contract_id: contractId},
+        relations: ['lessee', 'lessee.user', 'property', 'payments'],
     });
 
     if (!contract) {
