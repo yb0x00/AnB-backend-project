@@ -20,7 +20,7 @@ export const requestStripePayment = async (contractId: number): Promise<void> =>
         // TypeORM이 Lessee 엔티티를 로드하면 그 안에 정의된 user 관계는
         // 대부분 자동으로 로드되거나, 필요할 때 지연 로딩됩니다.
         // 중복해서 "lessee.user"를 명시하면 내부적으로 혼동을 줄 수 있습니다.
-        relations: ["lessee", "property"],
+        relations: ["lessee", "lessee.user", "property"],
     });
 
     if (!contract) throw new Error("계약 정보를 찾을 수 없습니다.");
