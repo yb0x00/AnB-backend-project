@@ -10,6 +10,7 @@ import {verifyMessage, Wallet, JsonRpcProvider, Contract as EthersContract} from
 import {handlePostSignatureProcess} from "@/services/contractCreation/posetSignature.service";
 import {NotificationType} from "@/enums/NotificationType";
 import LeaseContractAbi from "@/abi/LeaseContract.json";
+import {checkAndHandleAfterSignature} from "@/services/blockchain/checkAndHandleAfterSignature";
 
 interface CreateSignatureParams {
     userId: number;
@@ -150,9 +151,11 @@ export const createSignatureService = async ({
         if (count === 3) {
             console.log("모든 서명 완료 – 후속 처리 시작");
             setImmediate(() => {
-                handlePostSignatureProcess({
-                    contractId: contractId,
-                    contractBlockchainId: contract.contract_blockchain_id!,
+                checkAndHandleAfterSignature(
+                    contractId,
+                    contract.contract_blockchain_id!
+                ).catch((err) => {
+                    console.error("[SignatureStatusCheck] 후속 처리 중 에러 발생", err);
                 });
             });
         }

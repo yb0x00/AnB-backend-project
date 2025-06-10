@@ -10,6 +10,7 @@ import {demoBalancePaymentSchedulerForContract} from "@/services/scheduler/demo_
 import {confirmFullyPaid} from "@/services/blockchain/confirmFullyPaid";
 import {getContractStatus} from "@/services/blockchain/getContractStatus";
 import {BlockChainContractStatus} from "@/enums/BlockChainContractStatus";
+import {checkConfirmedStatusAndNotify} from "@/services/scheduler/checkBlockchainConfirmedStatus.service";
 
 const router = express.Router();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -183,18 +184,22 @@ router.post(
                                 BigInt(Math.floor(balancePaymentTimestamp / 1000))
                             );
 
-                            const maxRetries = 10;
-                            const delay = 2000;
-                            let statusOnChain = -1;
+                            checkConfirmedStatusAndNotify(contract.contract_id)
+                                .then(() => console.log("[Async] Blockchain confirmation notifier 시작"))
+                                .catch((err) => console.error("[Async] Blockchain notifier 오류", err));
 
-                            for (let i = 0; i < maxRetries; i++) {
-                                statusOnChain = await getContractStatus(blockchainId);
-                                console.log(`[RETRY ${i + 1}] On-chain status:`, statusOnChain);
-                                if (statusOnChain === BlockChainContractStatus.Confirmed) break;
-                                await new Promise((res) => setTimeout(res, delay));
-                            }
-
-                            console.log("[SUCCESS] Blockchain status check completed");
+                            // const maxRetries = 10;
+                            // const delay = 2000;
+                            // let statusOnChain = -1;
+                            //
+                            // for (let i = 0; i < maxRetries; i++) {
+                            //     statusOnChain = await getContractStatus(blockchainId);
+                            //     console.log(`[RETRY ${i + 1}] On-chain status:`, statusOnChain);
+                            //     if (statusOnChain === BlockChainContractStatus.Confirmed) break;
+                            //     await new Promise((res) => setTimeout(res, delay));
+                            // }
+                            //
+                            // console.log("[SUCCESS] Blockchain status check completed");
                         } else {
                             console.warn("[WARN] No blockchainId found, skipping confirmFullyPaid");
                         }
