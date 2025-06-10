@@ -27,9 +27,6 @@ export const checkConfirmedStatusAndNotify = async (contractId: number) => {
         return;
     }
 
-    const status = await getContractStatus(contract.contract_blockchain_id);
-    console.log(`[BlockchainCheck] Blockchain status: ${status}`);
-
     const balancePayment = contract.payments.find(p => p.payment_type === "잔금");
     if (!balancePayment) {
         console.warn("[BlockchainCheck] No 잔금 payment found");

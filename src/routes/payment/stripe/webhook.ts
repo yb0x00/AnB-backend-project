@@ -177,17 +177,16 @@ router.post(
                         console.log("[DEBUG] balancePaymentTimestamp (sec):", Math.floor(balancePaymentTimestamp / 1000));
                         console.log("[DEBUG] Blockchain ID:", blockchainId);
 
+                        checkConfirmedStatusAndNotify(contract.contract_id)
+                            .then(() => console.log("[Async] Blockchain confirmation notifier 시작"))
+                            .catch((err) => console.error("[Async] Blockchain notifier 오류", err));
+
                         if (blockchainId != null) {
                             await confirmFullyPaid(
                                 blockchainId,
                                 BigInt(Math.floor(downPaymentTimestamp / 1000)),
                                 BigInt(Math.floor(balancePaymentTimestamp / 1000))
                             );
-
-                            checkConfirmedStatusAndNotify(contract.contract_id)
-                                .then(() => console.log("[Async] Blockchain confirmation notifier 시작"))
-                                .catch((err) => console.error("[Async] Blockchain notifier 오류", err));
-
                             // const maxRetries = 10;
                             // const delay = 2000;
                             // let statusOnChain = -1;
