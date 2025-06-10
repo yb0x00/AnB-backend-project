@@ -146,14 +146,35 @@ router.post(
 
                     try {
                         const downPayment = contract.payments.find((p) => p.payment_type === "계약금");
-                        if (!downPayment?.payment_actual_date) {
-                            res.status(500).send("Missing down payment date");
+                        const balancePayment = contract.payments.find((p) => p.payment_type === "잔금");
+
+                        if (!downPayment?.payment_actual_date || !balancePayment?.payment_actual_date) {
+                            console.error("[ERROR] Down payment or balance payment date is missing");
+                            res.status(500).send("Missing payment date");
                             return;
                         }
 
-                        const downPaymentTimestamp = new Date(downPayment.payment_actual_date + 'T00:00:00Z').getTime();
-                        const balancePaymentTimestamp = new Date(payment.payment_actual_date + 'T00:00:00Z').getTime();
+                        const downDateStr = downPayment.payment_actual_date.toString();
+                        const balanceDateStr = balancePayment.payment_actual_date.toString();
+
+                        const downDate = new Date(downDateStr + 'T00:00:00Z');
+                        const balanceDate = new Date(balanceDateStr + 'T00:00:00Z');
+
+                        if (isNaN(downDate.getTime()) || isNaN(balanceDate.getTime())) {
+                            console.error("[ERROR] Invalid date parsing:", {downDateStr, balanceDateStr});
+                            res.status(500).send("Invalid date format");
+                            return;
+                        }
+
+                        const downPaymentTimestamp = downDate.getTime();
+                        const balancePaymentTimestamp = balanceDate.getTime();
                         const blockchainId = contract.contract_blockchain_id;
+
+                        console.log("[DEBUG] Parsed downPaymentTimestamp (ms):", downPaymentTimestamp);
+                        console.log("[DEBUG] Parsed balancePaymentTimestamp (ms):", balancePaymentTimestamp);
+                        console.log("[DEBUG] downPaymentTimestamp (sec):", Math.floor(downPaymentTimestamp / 1000));
+                        console.log("[DEBUG] balancePaymentTimestamp (sec):", Math.floor(balancePaymentTimestamp / 1000));
+                        console.log("[DEBUG] Blockchain ID:", blockchainId);
 
                         if (blockchainId != null) {
                             await confirmFullyPaid(
@@ -168,9 +189,14 @@ router.post(
 
                             for (let i = 0; i < maxRetries; i++) {
                                 statusOnChain = await getContractStatus(blockchainId);
+                                console.log(`[RETRY ${i + 1}] On-chain status:`, statusOnChain);
                                 if (statusOnChain === BlockChainContractStatus.Confirmed) break;
                                 await new Promise((res) => setTimeout(res, delay));
                             }
+
+                            console.log("[SUCCESS] Blockchain status check completed");
+                        } else {
+                            console.warn("[WARN] No blockchainId found, skipping confirmFullyPaid");
                         }
                     } catch (err) {
                         console.error(`[Blockchain][오류] confirmFullyPaid 처리 실패 - contractId=${contract.contract_id}`, err);
