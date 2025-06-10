@@ -151,8 +151,8 @@ router.post(
                             return;
                         }
 
-                        const downPaymentTimestamp = downPayment.payment_actual_date.getTime();
-                        const balancePaymentTimestamp = payment.payment_actual_date.getTime();
+                        const downPaymentTimestamp = new Date(downPayment.payment_actual_date + 'T00:00:00Z').getTime();
+                        const balancePaymentTimestamp = new Date(payment.payment_actual_date + 'T00:00:00Z').getTime();
                         const blockchainId = contract.contract_blockchain_id;
 
                         if (blockchainId != null) {
